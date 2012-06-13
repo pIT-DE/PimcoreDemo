@@ -29,6 +29,7 @@ pimcore.object.object = Class.create(pimcore.object.abstract, {
         this.versions = new pimcore.object.versions(this);
         this.scheduler = new pimcore.element.scheduler(this, "object");
         this.dependencies = new pimcore.element.dependencies(this, "object");
+        this.notes = new pimcore.element.notes(this, "object");
         this.reports = new pimcore.report.panel("object_concrete", this);
         this.variants = new pimcore.object.variantsTab(this);
         this.getData();
@@ -142,7 +143,7 @@ pimcore.object.object = Class.create(pimcore.object.abstract, {
 
         this.tab.on("beforedestroy", function () {
             Ext.Ajax.request({
-                url: "/admin/misc/unlock-element",
+                url: "/admin/element/unlock-element",
                 params: {
                     id: this.id,
                     type: "object"
@@ -195,6 +196,10 @@ pimcore.object.object = Class.create(pimcore.object.abstract, {
         var reportLayout = this.reports.getLayout();
         if(reportLayout) {
             items.push(reportLayout);
+        }
+
+        if (this.isAllowed("settings")) {
+            items.push(this.notes.getLayout());
         }
 
         if(this.data.childdata.data.classes.length > 0) {
@@ -294,11 +299,11 @@ pimcore.object.object = Class.create(pimcore.object.abstract, {
             if (this.isAllowed("publish")) {
                 buttons.push(this.toolbarButtons.publish);
             }
-            if (this.isAllowed("unpublish")) {
+            if (this.isAllowed("unpublish") && !this.data.general.o_locked) {
                 buttons.push(this.toolbarButtons.unpublish);
             }
 
-            if(this.isAllowed("delete")) {
+            if(this.isAllowed("delete") && !this.data.general.o_locked) {
                 buttons.push(this.toolbarButtons.remove);
             }
 

@@ -112,18 +112,6 @@ class Admin_MiscController extends Pimcore_Controller_Action_Admin
         $this->_helper->json($response);
     }
 
-    public function lockElementAction()
-    {
-        Element_Editlock::lock($this->_getParam("id"), $this->_getParam("type"));
-        exit;
-    }
-
-    public function unlockElementAction()
-    {
-        Element_Editlock::unlock($this->_getParam("id"), $this->_getParam("type"));
-        exit;
-    }
-
     public function availableLanguagesAction()
     {
         $this->getResponse()->setHeader("Content-Type", "text/javascript", true);

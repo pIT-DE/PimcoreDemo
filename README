@@ -37,3 +37,6 @@ Install:
 3. modify DOCUMENT_ROOT/website/var/config/system.xml
 4. Have Fun :-)
 
+Login:
+The default user is "admin" with the password "admin"
+

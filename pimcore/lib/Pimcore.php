@@ -350,6 +350,7 @@ class Pimcore {
                         $email = $user->getEmail();
                         if(!empty($email)){
                             $mail = Pimcore_Tool::getMail(array($email),"pimcore log notification");
+                            $mail->setIgnoreDebugMode(true);
                             if(!is_dir(PIMCORE_LOG_MAIL_TEMP)){
                                 mkdir(PIMCORE_LOG_MAIL_TEMP,0755,true);
                             }
@@ -560,7 +561,7 @@ class Pimcore {
         $autoloader->registerNamespace('Csv');
         $autoloader->registerNamespace('Webservice');
         $autoloader->registerNamespace('Search');
-        $autoloader->registerNamespace('OutputFilter');
+        $autoloader->registerNamespace('Tool');
 
         Pimcore_Tool::registerClassModelMappingNamespaces();
     }
@@ -714,7 +715,6 @@ class Pimcore {
             "pimcore_user",
             "pimcore_config_system",
             "pimcore_admin_user",
-            "pimcore_admin_initialized",
             "pimcore_config_website",
             "pimcore_editmode",
             "pimcore_error_document",
@@ -823,16 +823,17 @@ class Pimcore {
 
             // gzip the contents and send connection close to that the process can run in the background to finish
             // some tasks like writing the cache ...
+            // using mb_strlen() because of PIMCORE-1509
             if($gzipIt) {
                 $output = "\x1f\x8b\x08\x00\x00\x00\x00\x00".
                     substr(gzcompress($data, 2), 0, -4).
                     pack('V', crc32($data)). // packing the CRC and the strlen is still required
-                    pack('V', strlen($data)); // (although all modern browsers don't need it anymore) to work properly with google adwords check & co.
+                    pack('V', mb_strlen($data, "latin1")); // (although all modern browsers don't need it anymore) to work properly with google adwords check & co.
 
                 // send headers & contents
                 header("Connection: close\r\n");
                 header("Content-Encoding: $contentEncoding\r\n");
-                header("Content-Length: " . strlen($output));
+                header("Content-Length: " . mb_strlen($output, "latin1"));
                 header("X-Powered-By: pimcore");
 
                 return $output;

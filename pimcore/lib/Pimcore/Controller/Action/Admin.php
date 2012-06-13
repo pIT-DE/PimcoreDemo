@@ -25,6 +25,12 @@ abstract class Pimcore_Controller_Action_Admin extends Pimcore_Controller_Action
      */
     protected $language = "en";
 
+    /**
+     * Indicates if this is the first call or a following
+     * @var bool
+     */
+    protected static $adminInitialized = false;
+
     public function init() {
 
         parent::init();
@@ -47,11 +53,19 @@ abstract class Pimcore_Controller_Action_Admin extends Pimcore_Controller_Action
             }
         }
 
-        try {
-            Zend_Registry::get("pimcore_admin_initialized");
-            $this->setUser(Zend_Registry::get("pimcore_admin_user"));
-        }
-        catch (Exception $e) {
+        if(self::$adminInitialized) {
+            // this will be executed on every call to this init() method
+            try {
+                $this->setUser(Zend_Registry::get("pimcore_admin_user"));
+            } catch (Exception $e) {
+                Logger::emerg("adminInitialized was set to true although there was no user set in the registry -> to be save the process was killed");
+                exit;
+            }
+        } else {
+            // the following code is only called once, even when there are some subcalls (eg. with $this->action, ... )
+
+            $this->disableBrowserCache();
+
             // general definitions
             Document::setHideUnpublished(false);
             Object_Abstract::setHideUnpublished(false);
@@ -82,6 +96,7 @@ abstract class Pimcore_Controller_Action_Admin extends Pimcore_Controller_Action
                     $user = Pimcore_Tool_Authentication::authenticateDigest();
                     if($user instanceof User) {
                         $this->setUser($user);
+                        self::$adminInitialized = true;
                         return;
                     }
                 }
@@ -104,8 +119,7 @@ abstract class Pimcore_Controller_Action_Admin extends Pimcore_Controller_Action
                 $this->getResponse()->setHeader("X-Pimcore-Auth","required");
                 // redirect to login page
                 $this->_redirect("/admin/login");
-                // send immetiatley the response and exit the execution
-                $this->getResponse()->sendResponse();
+                // exit the execution -> just to be sure
                 exit;
             }
 
@@ -119,7 +133,8 @@ abstract class Pimcore_Controller_Action_Admin extends Pimcore_Controller_Action
             }
 
             Zend_Registry::set("pimcore_admin_user", $this->getUser());
-            Zend_Registry::set("pimcore_admin_initialized", true);
+            self::$adminInitialized = true;
+
         }
     }
 

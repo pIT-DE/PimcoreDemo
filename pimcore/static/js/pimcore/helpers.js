@@ -245,7 +245,7 @@ pimcore.helpers.showNotification = function (title, text, type, errorText) {
     if(type == "error"){
 
         if(errorText != null && errorText != undefined){
-            text = text + " - " + errorText;
+            text = text + '<br /><br /><textarea style="width:300px; height:100px; font-size:11px;">' + strip_tags(errorText) + "</textarea>";
         }
         Ext.MessageBox.show({
             title:title,
@@ -323,7 +323,7 @@ pimcore.helpers.lockManager = function (cid, ctype, csubtype, data) {
     Ext.MessageBox.confirm(t("element_is_locked"), t("element_lock_message") + lockDetails, function (lock, buttonValue) {
         if (buttonValue == "yes") {
             Ext.Ajax.request({
-                url: "/admin/misc/unlock-element",
+                url: "/admin/element/unlock-element",
                 params: {
                     id: lock[0],
                     type:  lock[1]
@@ -802,6 +802,11 @@ pimcore.helpers.rememberOpenTab = function (item) {
             cleanedOpenTabs.push(openTabs[i]);
         }
     }
+
+    // limit to the latest 10
+    cleanedOpenTabs.reverse();
+    cleanedOpenTabs.splice(10, 1000);
+    cleanedOpenTabs.reverse();
 
     Ext.util.Cookies.set("pimcore_opentabs", "," + cleanedOpenTabs.join(",") + ",");
 }

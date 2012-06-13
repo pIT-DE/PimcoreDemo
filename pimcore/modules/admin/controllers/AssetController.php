@@ -57,6 +57,7 @@ class Admin_AssetController extends Pimcore_Controller_Action_Admin {
         $asset->getScheduledTasks();
         $asset->idPath = Pimcore_Tool::getIdPathForElement($asset);
         $asset->userPermissions = $asset->getUserPermissions();
+        $asset->setLocked($asset->isLocked());
 
         if ($asset instanceof Asset_Text) {
             $asset->getData();
@@ -802,7 +803,7 @@ class Admin_AssetController extends Pimcore_Controller_Action_Admin {
             header("Content-Type: " . $image->getMimetype());
         }
 
-        header("Content-Length: " . strlen($imageContent));
+        header("Content-Length: " . filesize($thumbnailFile));
         echo $imageContent;
         exit;
     }

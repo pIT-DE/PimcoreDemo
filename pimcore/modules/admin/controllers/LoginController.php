@@ -37,16 +37,13 @@ class Admin_LoginController extends Pimcore_Controller_Action_Admin {
                 if ($user->isActive()) {
                     if ($user->getEmail()) {
                         $token = Pimcore_Tool_Authentication::generateToken($username, $user->getPassword(), MCRYPT_TRIPLEDES, MCRYPT_MODE_ECB);
-                        $protocol = "http://";
-                        if(strpos(strtolower($_SERVER["SERVER_PROTOCOL"]),"https")===0){
-                            $protocol = "https://";
-                        }
-                        $uri = $protocol.$_SERVER['SERVER_NAME'];
-                        $loginUrl = $uri . "/admin/login/login/?username=" . $username . "&token=" . $token;
+                        $uri = $this->getRequest()->getScheme() . "://" . $this->getRequest()->getHttpHost() ;
+                        $loginUrl = $uri . "/admin/login/login/?username=" . $username . "&token=" . $token . "&reset=true";
                         
                         try {
                             
                             $mail = Pimcore_Tool::getMail(array($user->getEmail()), "Pimcore lost password service");
+                            $mail->setIgnoreDebugMode(true);
                             $mail->setBodyText("Login to pimcore and change your password using the following link. This temporary login link will expire in 30 minutes: \r\n\r\n" . $loginUrl);
                             $mail->send();
                             $this->view->success = true;
@@ -69,8 +66,6 @@ class Admin_LoginController extends Pimcore_Controller_Action_Admin {
 
 
     public function indexAction() {
-
-        Zend_Session::regenerateId();
 
         if ($this->getUser() instanceof User) {
             $this->_redirect("/admin/?_dc=" . time());
@@ -111,14 +106,23 @@ class Admin_LoginController extends Pimcore_Controller_Action_Admin {
 
                     } else if ($this->_getParam("token") and Pimcore_Tool_Authentication::tokenAuthentication($this->_getParam("username"), $this->_getParam("token"), MCRYPT_TRIPLEDES, MCRYPT_MODE_ECB, false)) {
                         $authenticated = true;
+
+                        // save the information to session when the user want's to reset the password
+                        // this is because otherwise the old password is required => see also PIMCORE-1468
+                        if($this->_getParam("reset")) {
+                            $adminSession = Pimcore_Tool_Authentication::getSession();
+                            $adminSession->password_reset = true;
+                        }
                     }
                     else {
                         throw new Exception("User and Password doesn't match");
                     }
 
                     if ($authenticated) {
-                        $adminSession = new Zend_Session_Namespace("pimcore_admin");
+                        $adminSession = Pimcore_Tool_Authentication::getSession();
                         $adminSession->user = $user;
+
+                        Zend_Session::regenerateId();
                     }
 
                 } else {
@@ -133,10 +137,10 @@ class Admin_LoginController extends Pimcore_Controller_Action_Admin {
             }
         } catch (Exception $e) {
 
-            //see if module ore plugin authenticates user
+            //see if module or plugin authenticates user
             $user = Pimcore_API_Plugin_Broker::getInstance()->authenticateUser($this->_getParam("username"),$this->_getParam("password"));
             if($user instanceof User){
-                $adminSession = new Zend_Session_Namespace("pimcore_admin");
+                $adminSession = Pimcore_Tool_Authentication::getSession();
                 $adminSession->user = $user;
                 $this->_redirect("/admin/?_dc=" . time());
             } else {
@@ -144,7 +148,6 @@ class Admin_LoginController extends Pimcore_Controller_Action_Admin {
                 Logger::info("Login Exception" . $e);
 
                 $this->_redirect("/admin/login/?auth_failed=true&inactive=" . $userInactive);
-                $this->getResponse()->sendResponse();
                 exit;
             }
         }
@@ -153,7 +156,7 @@ class Admin_LoginController extends Pimcore_Controller_Action_Admin {
     }
 
     public function logoutAction() {
-        $adminSession = new Zend_Session_Namespace("pimcore_admin");
+        $adminSession = Pimcore_Tool_Authentication::getSession();
 
         if ($adminSession->user instanceof User) {
             Pimcore_API_Plugin_Broker::getInstance()->preLogoutUser($adminSession->user);
@@ -161,7 +164,9 @@ class Admin_LoginController extends Pimcore_Controller_Action_Admin {
         }
 
         Zend_Session::destroy();
-        Zend_Session::regenerateId();
+
+        // cleanup pimcore-cookies => 315554400 => strtotime('1980-01-01')
+        setcookie("pimcore_opentabs", false, 315554400, "/");
 
         $this->_redirect("/admin/login/");
     }
@@ -170,7 +175,6 @@ class Admin_LoginController extends Pimcore_Controller_Action_Admin {
     /**
      * Protection against bruteforce
      */
-
     protected function getLogFile() {
 
         $logfile = PIMCORE_SYSTEM_TEMP_DIRECTORY . "/loginerror.log";

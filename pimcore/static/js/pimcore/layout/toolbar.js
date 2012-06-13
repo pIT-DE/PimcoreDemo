@@ -137,7 +137,19 @@ pimcore.layout.toolbar = Class.create({
                     text: t("tag_snippet_management"),
                     iconCls: "pimcore_icon_tag",
                     handler: this.showTagManagement
+                },{
+                    text: t("qr_codes"),
+                    iconCls: "pimcore_icon_qrcode",
+                    handler: this.showQRCode
                 }]
+            });
+        }
+
+        if (user.isAllowed("system_settings")) {
+            extrasItems.push({
+                text: t('notes') + " & " + t("events"),
+                iconCls: "pimcore_icon_tab_notes",
+                handler: this.notes
             });
         }
 
@@ -188,6 +200,10 @@ pimcore.layout.toolbar = Class.create({
                     text: "PHP Info",
                     iconCls: "pimcore_icon_php",
                     handler: this.showPhpInfo
+                },{
+                    text: "System-Requirements Check",
+                    iconCls: "pimcore_icon_systemrequirements",
+                    handler: this.showSystemRequirementsCheck
                 },{
                     text: "Server Info",
                     iconCls: "pimcore_icon_server_info",
@@ -647,6 +663,24 @@ pimcore.layout.toolbar = Class.create({
         }
     },
 
+    showQRCode: function () {
+        try {
+            pimcore.globalmanager.get("qrcode").activate();
+        }
+        catch (e) {
+            pimcore.globalmanager.add("qrcode", new pimcore.report.qrcode.panel());
+        }
+    },
+
+    notes: function () {
+        try {
+            pimcore.globalmanager.get("notes").activate();
+        }
+        catch (e) {
+            pimcore.globalmanager.add("notes", new pimcore.element.notes());
+        }
+    },
+
     editGlossary: function () {
 
         try {
@@ -842,6 +876,19 @@ pimcore.layout.toolbar = Class.create({
         }
         catch (e) {
             pimcore.globalmanager.add(id, new pimcore.tool.genericiframewindow(id, "/pimcore/modules/3rdparty/linfo/index.php", "pimcore_icon_server_info", "Server Info"));
+        }
+
+    },
+
+    showSystemRequirementsCheck: function () {
+
+        var id = "systemrequirementscheck";
+
+        try {
+            pimcore.globalmanager.get(id).activate();
+        }
+        catch (e) {
+            pimcore.globalmanager.add(id, new pimcore.tool.genericiframewindow(id, "/install/check/", "pimcore_icon_systemrequirements", "System-Requirements Check"));
         }
 
     },

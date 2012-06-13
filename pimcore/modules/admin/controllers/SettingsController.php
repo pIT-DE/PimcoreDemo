@@ -197,7 +197,9 @@ class Admin_SettingsController extends Pimcore_Controller_Action_Admin {
                 "config" => array(
                     "timezones" => $timezones,
                     "languages" => $languageOptions,
-                    "client_ip" => Pimcore_Tool::getClientIp()
+                    "client_ip" => Pimcore_Tool::getClientIp(),
+                    "google_private_key_exists" => file_exists(Pimcore_Google_Api::getPrivateKeyPath()),
+                    "google_private_key_path" => Pimcore_Google_Api::getPrivateKeyPath()
                 )
             );
 
@@ -302,8 +304,8 @@ class Admin_SettingsController extends Pimcore_Controller_Action_Admin {
                         "apikey" => $values["services.translate.apikey"]
                     ),
                     "google" => array(
-                        "username" => $values["services.google.username"],
-                        "password" => $values["services.google.password"]
+                        "client_id" => $values["services.google.client_id"],
+                        "email" => $values["services.google.email"]
                     )
                 ),
                 "cache" => array(
@@ -460,19 +462,19 @@ class Admin_SettingsController extends Pimcore_Controller_Action_Admin {
 
             if ($this->getUser()->isAllowed("routes")) {
 
+                $data = Zend_Json::decode($this->_getParam("data"));
+
+                foreach ($data as &$value) {
+                    $value = trim($value);
+                }
+
                 if ($this->_getParam("xaction") == "destroy") {
-
-                    $id = Zend_Json::decode($this->_getParam("data"));
-
-                    $route = Staticroute::getById($id);
+                    $route = Staticroute::getById($data);
                     $route->delete();
 
                     $this->_helper->json(array("success" => true, "data" => array()));
                 }
                 else if ($this->_getParam("xaction") == "update") {
-
-                    $data = Zend_Json::decode($this->_getParam("data"));
-
                     // save routes
                     $route = Staticroute::getById($data["id"]);
                     $route->setValues($data);
@@ -482,7 +484,7 @@ class Admin_SettingsController extends Pimcore_Controller_Action_Admin {
                     $this->_helper->json(array("data" => $route, "success" => true));
                 }
                 else if ($this->_getParam("xaction") == "create") {
-                    $data = Zend_Json::decode($this->_getParam("data"));
+
                     unset($data["id"]);
 
                     // save route
@@ -1444,7 +1446,7 @@ class Admin_SettingsController extends Pimcore_Controller_Action_Admin {
 
     public function tagManagementTreeAction () {
 
-        $dir = OutputFilter_Tag_Config::getWorkingDir();
+        $dir = Tool_Tag_Config::getWorkingDir();
 
         $tags = array();
         $files = scandir($dir);
@@ -1464,14 +1466,14 @@ class Admin_SettingsController extends Pimcore_Controller_Action_Admin {
     public function tagManagementAddAction () {
 
         try {
-            OutputFilter_Tag_Config::getByName($this->_getParam("name"));
+            Tool_Tag_Config::getByName($this->_getParam("name"));
             $alreadyExist = true;
         } catch (Exception $e) {
             $alreadyExist = false;
         }
 
         if(!$alreadyExist) {
-            $tag = new OutputFilter_Tag_Config();
+            $tag = new Tool_Tag_Config();
             $tag->setName($this->_getParam("name"));
             $tag->save();
         }
@@ -1481,7 +1483,7 @@ class Admin_SettingsController extends Pimcore_Controller_Action_Admin {
 
     public function tagManagementDeleteAction () {
 
-        $tag = OutputFilter_Tag_Config::getByName($this->_getParam("name"));
+        $tag = Tool_Tag_Config::getByName($this->_getParam("name"));
         $tag->delete();
 
         $this->_helper->json(array("success" => true));
@@ -1490,14 +1492,14 @@ class Admin_SettingsController extends Pimcore_Controller_Action_Admin {
 
     public function tagManagementGetAction () {
 
-        $tag = OutputFilter_Tag_Config::getByName($this->_getParam("name"));
+        $tag = Tool_Tag_Config::getByName($this->_getParam("name"));
         $this->_helper->json($tag);
     }
 
 
     public function tagManagementUpdateAction () {
 
-        $tag = OutputFilter_Tag_Config::getByName($this->_getParam("name"));
+        $tag = Tool_Tag_Config::getByName($this->_getParam("name"));
         $data = Zend_Json::decode($this->_getParam("configuration"));
         $data = array_htmlspecialchars($data);
 

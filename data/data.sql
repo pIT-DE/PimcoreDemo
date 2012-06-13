@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.1.62, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (x86_64)
 --
 
 -- ------------------------------------------------------
--- Server version	5.1.62-0ubuntu0.11.10.1
+-- Server version	5.5.24-0ubuntu0.12.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -501,7 +501,7 @@ CREATE TABLE `http_error_log` (
   KEY `path` (`path`(255)),
   KEY `code` (`code`),
   KEY `date` (`date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -510,7 +510,65 @@ CREATE TABLE `http_error_log` (
 
 LOCK TABLES `http_error_log` WRITE;
 /*!40000 ALTER TABLE `http_error_log` DISABLE KEYS */;
+
 /*!40000 ALTER TABLE `http_error_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `notes`
+--
+
+DROP TABLE IF EXISTS `notes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `notes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(255) DEFAULT NULL,
+  `cid` int(11) DEFAULT NULL,
+  `ctype` enum('asset','document','object') DEFAULT NULL,
+  `date` int(11) DEFAULT NULL,
+  `user` int(11) DEFAULT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `description` longtext,
+  PRIMARY KEY (`id`),
+  KEY `cid` (`cid`),
+  KEY `ctype` (`ctype`),
+  KEY `date` (`date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `notes`
+--
+
+LOCK TABLES `notes` WRITE;
+/*!40000 ALTER TABLE `notes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `notes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `notes_data`
+--
+
+DROP TABLE IF EXISTS `notes_data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `notes_data` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(255) DEFAULT NULL,
+  `type` enum('text','date','document','asset','object','bool') DEFAULT NULL,
+  `data` text,
+  KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `notes_data`
+--
+
+LOCK TABLES `notes_data` WRITE;
+/*!40000 ALTER TABLE `notes_data` DISABLE KEYS */;
+/*!40000 ALTER TABLE `notes_data` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -630,10 +688,10 @@ SET character_set_client = utf8;
   `o_userModification` int(11) unsigned,
   `o_classId` int(11) unsigned,
   `o_className` varchar(255),
-  `active` longblob,
-  `name` varchar(341),
-  `teaser` varchar(341),
-  `text` varchar(341)
+  `active` text,
+  `name` text,
+  `teaser` text,
+  `text` text
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -1257,7 +1315,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,0,'user','admin','ec027e0a707439dcdfbc71ee7a8c05b9','admin','','','de',1,1,'assets,classes,clear_cache,clear_temp_files,document_types,documents,glossary,objects,plugins,predefined_properties,redirects,reports,routes,seemode,system_settings,thumbnails,translations','',0,0),(3,0,'user','system',NULL,'','','','en',1,1,'assets,classes,clear_cache,clear_temp_files,document_types,documents,glossary,objects,plugins,predefined_properties,redirects,reports,routes,seemode,system_settings,thumbnails,translations','',0,0);
+INSERT INTO `users` VALUES (1,0,'user','admin','ec027e0a707439dcdfbc71ee7a8c05b9','admin','','','de',1,1,'assets,classes,clear_cache,clear_temp_files,document_types,documents,glossary,objects,plugins,predefined_properties,redirects,reports,routes,seemode,system_settings,thumbnails,translations','',1,0),(3,0,'user','system',NULL,'','','','en',1,1,'assets,classes,clear_cache,clear_temp_files,document_types,documents,glossary,objects,plugins,predefined_properties,redirects,reports,routes,seemode,system_settings,thumbnails,translations','',0,0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1510,4 +1568,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-05-20 12:30:57
+-- Dump completed on 2012-06-13 18:28:28

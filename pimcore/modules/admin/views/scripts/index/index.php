@@ -227,6 +227,7 @@
             "pimcore/element/properties.js",
             "pimcore/element/scheduler.js",
             "pimcore/element/dependencies.js",
+            "pimcore/element/notes.js",
             "pimcore/object/helpers/grid.js",
             "pimcore/object/helpers/gridConfigDialog.js",
             "pimcore/object/helpers/gridTabAbstract.js",
@@ -254,7 +255,6 @@
             
             // assets
             "pimcore/asset/asset.js",
-            "pimcore/asset/metadata.js",
             "pimcore/asset/unknown.js",
             "pimcore/asset/image.js",
             "pimcore/asset/document.js",
@@ -376,12 +376,12 @@
             "pimcore/report/analytics/elementexplorer.js",
             "pimcore/report/analytics/elementnavigation.js",
             "pimcore/report/webmastertools/settings.js",
-            "pimcore/report/webmastertools/keywords.js",
-            "pimcore/report/webmastertools/crawling.js",
-            "pimcore/report/websiteoptimizer/abcreate.js",
 
             "pimcore/settings/tagmanagement/panel.js",
             "pimcore/settings/tagmanagement/item.js",
+
+            "pimcore/report/qrcode/panel.js",
+            "pimcore/report/qrcode/item.js",
 
             // extension manager
             "pimcore/extensionmanager/settings.js",
