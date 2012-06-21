@@ -150,10 +150,7 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
             if ($user) {
 
                 // only get version data at the first call || because of embedded Snippets ...
-                try {
-                    Zend_Registry::get("pimcore_version_active");
-                }
-                catch (Exception $e) {
+                if(!Zend_Registry::isRegistered("pimcore_version_active")) {
                     $version = Version::getById($this->_getParam("pimcore_version"));
                     $this->setDocument($version->getData());
 
@@ -204,10 +201,9 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
 
     public function initTranslation() {
         
-        try {
+        if(Zend_Registry::isRegistered("Zend_Translate")) {
             $translator = Zend_Registry::get("Zend_Translate");
-        }
-        catch (Exception $e) {
+        } else {
             // setup Zend_Translate
             try {
                 $locale = Zend_Registry::get("Zend_Locale");
@@ -247,11 +243,13 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
 
     public function getRenderScript() {
 
-        // try to get template out of the document object
-        if ($this->document instanceof Document && $template = $this->document->getTemplate()) {
-            return $template;
+        // try to get template out of the document object, but only if the parameter `staticroute´ is not set, which indicates
+        // if a request comes through a static/custom route (contains the route Object => Staticroute)
+        // see PIMCORE-1545
+        if ($this->document instanceof Document && $this->document->getTemplate() && !$this->_getParam("staticroute")) {
+            return $this->document->getTemplate();
         }
-            // try to get the template over the params
+            // try to get the template out of the params
         else if ($this->_getParam("template")) {
             return $this->_getParam("template");
         }
@@ -337,7 +335,7 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
                     $this->disableLayout();
                 }
                 catch (Exception $e) {
-                    exit;
+                    die("Unable to load error document");
                 }
             }
         }

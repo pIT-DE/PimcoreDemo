@@ -405,7 +405,7 @@ CREATE TABLE `edit_lock` (
   KEY `cid` (`cid`),
   KEY `ctype` (`ctype`),
   KEY `cidtype` (`cid`,`ctype`)
-) ENGINE=InnoDB AUTO_INCREMENT=281 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=282 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -414,7 +414,7 @@ CREATE TABLE `edit_lock` (
 
 LOCK TABLES `edit_lock` WRITE;
 /*!40000 ALTER TABLE `edit_lock` DISABLE KEYS */;
-INSERT INTO `edit_lock` VALUES (7,12,'document',1,'m78nklg7l6h1gkiu1vskja6gq3',1332192127),(10,4,'document',1,'m78nklg7l6h1gkiu1vskja6gq3',1332192127),(11,3,'document',1,'h6tnsaj1scdorv8b0bfn5mc5m4',1332265138),(12,194,'document',1,'qhg9hlkn499ploqv61elrnssi3',1332328385),(155,212,'document',1,'00i26c1brsq2nb34588tnue472',1333050090),(156,1,'document',1,'qpajl8q30gc7tqpg64ikvobrn1',1333480689),(168,0,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333488950),(189,167,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(190,235,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(191,248,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(192,251,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(193,226,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(194,253,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(195,219,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(196,217,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(199,225,'document',1,'vrkd0kljrd3nbd82rip5u6pd83',1333495733),(200,226,'document',1,'vrkd0kljrd3nbd82rip5u6pd83',1333495783),(201,227,'document',1,'vrkd0kljrd3nbd82rip5u6pd83',1333495833),(202,214,'document',1,'vrkd0kljrd3nbd82rip5u6pd83',1333495869),(207,216,'document',1,'59k3up7g07a2d9364u0hsteji6',1333528083),(209,210,'document',1,'59k3up7g07a2d9364u0hsteji6',1333528172),(210,223,'document',1,'59k3up7g07a2d9364u0hsteji6',1333528176),(211,224,'document',1,'59k3up7g07a2d9364u0hsteji6',1333528188),(252,152,'asset',1,'jhttobbtcvk7qphp5jdkkfuvj1',1333643870),(253,157,'asset',1,'jhttobbtcvk7qphp5jdkkfuvj1',1333643871),(254,195,'document',1,'v9t0bpt43r9un57erecs429s95',1333809189),(258,1,'object',1,'v9t0bpt43r9un57erecs429s95',1333809309),(259,209,'document',1,'v9t0bpt43r9un57erecs429s95',1333809354),(269,206,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248847),(271,219,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248860),(272,220,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248869),(273,208,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248878),(274,221,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248902),(276,222,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248952),(277,217,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248963),(278,218,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335249125),(279,228,'document',1,'54j33tr24ue9uan387pmjvhrq4',1336468495),(280,207,'document',1,'pcbbfb8r75tpdfam9ftevq3qm1',1337506915);
+INSERT INTO `edit_lock` VALUES (7,12,'document',1,'m78nklg7l6h1gkiu1vskja6gq3',1332192127),(10,4,'document',1,'m78nklg7l6h1gkiu1vskja6gq3',1332192127),(11,3,'document',1,'h6tnsaj1scdorv8b0bfn5mc5m4',1332265138),(12,194,'document',1,'qhg9hlkn499ploqv61elrnssi3',1332328385),(155,212,'document',1,'00i26c1brsq2nb34588tnue472',1333050090),(156,1,'document',1,'qpajl8q30gc7tqpg64ikvobrn1',1333480689),(168,0,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333488950),(189,167,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(190,235,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(191,248,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(192,251,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(193,226,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(194,253,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(195,219,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(196,217,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(199,225,'document',1,'vrkd0kljrd3nbd82rip5u6pd83',1333495733),(200,226,'document',1,'vrkd0kljrd3nbd82rip5u6pd83',1333495783),(201,227,'document',1,'vrkd0kljrd3nbd82rip5u6pd83',1333495833),(202,214,'document',1,'vrkd0kljrd3nbd82rip5u6pd83',1333495869),(207,216,'document',1,'59k3up7g07a2d9364u0hsteji6',1333528083),(209,210,'document',1,'59k3up7g07a2d9364u0hsteji6',1333528172),(210,223,'document',1,'59k3up7g07a2d9364u0hsteji6',1333528176),(211,224,'document',1,'59k3up7g07a2d9364u0hsteji6',1333528188),(252,152,'asset',1,'jhttobbtcvk7qphp5jdkkfuvj1',1333643870),(253,157,'asset',1,'jhttobbtcvk7qphp5jdkkfuvj1',1333643871),(254,195,'document',1,'v9t0bpt43r9un57erecs429s95',1333809189),(258,1,'object',1,'v9t0bpt43r9un57erecs429s95',1333809309),(269,206,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248847),(271,219,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248860),(272,220,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248869),(273,208,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248878),(274,221,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248902),(276,222,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248952),(277,217,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248963),(278,218,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335249125),(279,228,'document',1,'54j33tr24ue9uan387pmjvhrq4',1336468495),(280,207,'document',1,'pcbbfb8r75tpdfam9ftevq3qm1',1337506915),(281,209,'document',1,'clv4ffbq2248ufor8up8p40bm2',1340292439);
 /*!40000 ALTER TABLE `edit_lock` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -501,7 +501,7 @@ CREATE TABLE `http_error_log` (
   KEY `path` (`path`(255)),
   KEY `code` (`code`),
   KEY `date` (`date`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1568,4 +1568,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-06-13 18:28:28
+-- Dump completed on 2012-06-21 17:30:44
