@@ -117,6 +117,7 @@ class Document_Tag_Renderlet extends Document_Tag {
                 "id" => $this->id,
                 "type" => $this->type,
                 "subtype" => $this->subtype,
+                "pimcore_request_source" => "renderlet",
                 "disableBlockClearing" => true
             );
 

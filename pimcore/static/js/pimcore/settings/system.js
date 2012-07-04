@@ -135,16 +135,6 @@ pimcore.settings.system = Class.create({
                 pimcore.globalmanager.remove("settings_system");
             }.bind(this));
 
-
-            var themeStore = new Ext.data.SimpleStore({
-                fields: ['name', 'path'],
-                data: [
-                    ["blue","/pimcore/static/js/lib/ext/resources/css/xtheme-blue.css"],
-                    ["gray","/pimcore/static/js/lib/ext/resources/css/xtheme-gray.css"]/*,
-                    ["slate","/pimcore/static/js/lib/ext-plugins/xtheme-slate/css/xtheme-slate.css"]*/
-                ]
-            });
-
             // sites error pages
             var sitesErrorPagesFields = [];
             var sites = pimcore.globalmanager.get("sites");
@@ -255,20 +245,6 @@ pimcore.settings.system = Class.create({
                                 width: 600,
                                 value: t('valid_languages_frontend_description'),
                                 cls: "pimcore_extra_label_bottom"
-                            },
-                            {
-                                fieldLabel: t('admin_theme'),
-                                name: 'general.theme',
-                                xtype: "combo",
-                                editable: false,
-                                triggerAction: 'all',
-                                valueField: 'path',
-                                displayField: 'name',
-                                store: themeStore,
-                                mode: "local",
-                                value: this.getValue("general.theme"),
-                                width: 100,
-                                listWidth: 100
                             },
                             {
                                 fieldLabel: t('show_random_pictures_on_login_screen'),
@@ -855,6 +831,12 @@ pimcore.settings.system = Class.create({
                                 xtype: "displayfield",
                                 hideLabel: true,
                                 width: 600,
+                                value: "<b>" + t('google_api_key_service') + "</b>",
+                                cls: "pimcore_extra_label"
+                            },{
+                                xtype: "displayfield",
+                                hideLabel: true,
+                                width: 600,
                                 value: t("google_api_access_description"),
                                 cls: "pimcore_extra_label"
                             },
@@ -886,13 +868,13 @@ pimcore.settings.system = Class.create({
                                 xtype: "displayfield",
                                 hideLabel: true,
                                 width: 600,
-                                value: "<b>" + t('google_maps_api_v3_key'),
+                                value: "<b>" + t('google_api_key_simple') + "</b>",
                                 cls: "pimcore_extra_label"
                             },
                             {
                                 fieldLabel: t('api_key'),
-                                name: 'services.googlemaps.apikey',
-                                value: this.getValue("services.googlemaps.apikey"),
+                                name: 'services.google.simpleapikey',
+                                value: this.getValue("services.google.simpleapikey"),
                                 width: 650
                             },{
                                 xtype: "displayfield",

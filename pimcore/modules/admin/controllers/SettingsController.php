@@ -297,15 +297,13 @@ class Admin_SettingsController extends Pimcore_Controller_Action_Admin {
                     "icc_cmyk_profile" => $values["assets.icc_cmyk_profile"]
                 ),
                 "services" => array(
-                    "googlemaps" => array(
-                        "apikey" => $values["services.googlemaps.apikey"]
-                    ),
                     "translate" => array(
                         "apikey" => $values["services.translate.apikey"]
                     ),
                     "google" => array(
                         "client_id" => $values["services.google.client_id"],
-                        "email" => $values["services.google.email"]
+                        "email" => $values["services.google.email"],
+                        "simpleapikey" => $values["services.google.simpleapikey"]
                     )
                 ),
                 "cache" => array(
@@ -840,6 +838,22 @@ class Admin_SettingsController extends Pimcore_Controller_Action_Admin {
         $this->_helper->json(false);
     }
 
+    public function translationsCleanupAction() {
+
+        $listClass = "Translation_" . ucfirst($this->_getParam("type")) . "_List";
+        if(class_exists($listClass)) {
+
+            $list = new $listClass();
+            $list->cleanup();
+
+            Pimcore_Model_Cache::clearTags(array("translator","translate"));
+
+            $this->_helper->json(array("success" => true));
+        }
+
+        $this->_helper->json(array("success" => false));
+    }
+
     public function getAvailableLanguagesAction() {
 
         if ($languages = Pimcore_Tool::getValidLanguages()) {
@@ -1262,7 +1276,7 @@ class Admin_SettingsController extends Pimcore_Controller_Action_Admin {
             $pipe->save();
         }
 
-        $this->_helper->json(array("success" => !$alreadyExist));
+        $this->_helper->json(array("success" => !$alreadyExist, "id" => $pipe->getName()));
     }
 
     public function thumbnailDeleteAction () {
@@ -1363,7 +1377,7 @@ class Admin_SettingsController extends Pimcore_Controller_Action_Admin {
             $pipe->save();
         }
 
-        $this->_helper->json(array("success" => !$alreadyExist));
+        $this->_helper->json(array("success" => !$alreadyExist, "id" => $pipe->getName()));
     }
 
     public function videoThumbnailDeleteAction () {
@@ -1478,7 +1492,7 @@ class Admin_SettingsController extends Pimcore_Controller_Action_Admin {
             $tag->save();
         }
 
-        $this->_helper->json(array("success" => !$alreadyExist));
+        $this->_helper->json(array("success" => !$alreadyExist, "id" => $tag->getName()));
     }
 
     public function tagManagementDeleteAction () {

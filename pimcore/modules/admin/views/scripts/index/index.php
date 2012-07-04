@@ -33,18 +33,11 @@
     
     <?php // define stylesheets ?>
     <?php
-        $conf = Pimcore_Config::getSystemConfig();
-
-        $themeUrl = "/pimcore/static/js/lib/ext/resources/css/xtheme-blue.css";
-        if ($conf->general->theme) {
-            $themeUrl = $conf->general->theme;
-        }
-
         $styles = array(
             "/admin/misc/admin-css",
             "/pimcore/static/css/icons.css",
             "/pimcore/static/js/lib/ext/resources/css/ext-all.css",
-            $themeUrl,
+            "/pimcore/static/js/lib/ext/resources/css/xtheme-gray.css",
             "/pimcore/static/js/lib/ext-plugins/SwfUploadPanel/SwfUploadPanel.css",
             "/pimcore/static/js/lib/ext-plugins/Notification/notification.css",
             "/pimcore/static/js/lib/ext-plugins/SuperBoxSelect/superboxselect.css",
@@ -64,7 +57,7 @@
 
     <!-- stylesheets -->
     <?php foreach ($styles as $style) { ?>
-        <link rel="stylesheet" type="text/css" href="<?php echo $style ?>" />
+        <link rel="stylesheet" type="text/css" href="<?php echo $style ?>?_dc=<?php echo Pimcore_Version::$revision ?>" />
     <?php } ?>
 
 
@@ -432,7 +425,7 @@
             language: '<?php echo $this->language; ?>',
             websiteLanguages: <?php echo Zend_Json::encode(explode(",",$this->config->general->validLanguages)); ?>,
             google_translate_api_key: "<?php echo $this->config->services->translate->apikey; ?>",
-            google_maps_api_key: "<?php echo $this->config->services->googlemaps->apikey ?>",
+            google_maps_api_key: "<?php echo $this->config->services->google->simpleapikey ?>",
             liveconnectToken: "<?php echo $this->liveconnectToken; ?>",
             showCloseConfirmation: true
         };
@@ -440,7 +433,7 @@
     
     
     <?php // 3rd party libraries ?>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false&key=<?php echo $this->config->services->googlemaps->apikey ?>"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false&key=<?php echo $this->config->services->google->simpleapikey ?>"></script>
 
     <script type="text/javascript" src="/admin/misc/json-translations-system/language/<?php echo $this->language ?>/?_dc=<?php echo Pimcore_Version::$revision ?>"></script>
     <script type="text/javascript" src="/admin/misc/json-translations-admin/language/<?php echo $this->language ?>/?_dc=<?php echo Pimcore_Version::$revision ?>"></script>

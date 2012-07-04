@@ -246,7 +246,7 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
         // try to get template out of the document object, but only if the parameter `staticroute´ is not set, which indicates
         // if a request comes through a static/custom route (contains the route Object => Staticroute)
         // see PIMCORE-1545
-        if ($this->document instanceof Document && $this->document->getTemplate() && !$this->_getParam("staticroute")) {
+        if ($this->document instanceof Document && $this->document->getTemplate() && !in_array($this->_getParam("pimcore_request_source"), array("staticroute", "renderlet"))) {
             return $this->document->getTemplate();
         }
             // try to get the template out of the params
@@ -285,7 +285,8 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
 
         // initialize translation if required
         $this->initTranslation();
-        // this is for $this->action in templates when they are inside a block element
+
+        // this is for $this->action() in templates when they are inside a block element
         try {
             if (!$this->_getParam("disableBlockClearing")) {
                 $this->parentBlockCurrent = Zend_Registry::get("pimcore_tag_block_current");
@@ -296,6 +297,7 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
             }
         }
         catch (Exception $e) {
+            Logger::debug($e);
         }
     }
 
