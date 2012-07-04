@@ -1,0 +1,26 @@
+
+.pagingbox
+{
+    color: #7f007f;
+    display: inline-block;
+    background: #fbf0d2;
+    width: 100%;
+    padding: 10px;
+}
+
+.pagingbox .label {
+    float: left;
+    padding: 5px 0;
+}
+.pagingbox .paging {
+    float: right;
+}
+
+.pagingbox .paging .numbers a {
+    background: #fe0002;
+    color: #ffffff;
+    padding: 5px 10px;
+    margin: 0 0 0 5px;
+    display: inline-block;
+
+}

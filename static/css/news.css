@@ -1,0 +1,26 @@
+/**
+ * My Styles for
+ * Controller: object
+ * Action: list + detail
+ */
+
+.newsitems {
+    width: 100%;
+    display: inline-block;
+    margin: 10px 0 0 0;
+}
+
+.newsitems .item {
+    float: left;
+    width: 100%;
+}
+
+.newsitems .item * {
+    color: #333;
+}
+
+.newsitems .item img {
+    float: right;
+}
+
+

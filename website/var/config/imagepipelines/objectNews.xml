@@ -4,14 +4,14 @@
     <item>
       <method>cover</method>
       <arguments>
-        <width>120</width>
-        <height>70</height>
+        <width>200</width>
+        <height>150</height>
         <positioning>center</positioning>
       </arguments>
     </item>
   </items>
-  <name>subnavTeaser</name>
+  <name>objectNews</name>
   <description></description>
-  <format>JPEG</format>
-  <quality>100</quality>
+  <format>SOURCE</format>
+  <quality>90</quality>
 </zend-config>

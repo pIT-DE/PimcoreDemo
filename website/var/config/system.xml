@@ -10,14 +10,14 @@
     <loginscreenimageservice>1</loginscreenimageservice>
     <loginscreencustomimage></loginscreencustomimage>
     <debug>1</debug>
-    <debug_ip></debug_ip>
+    <debug_ip>62.99.163.106</debug_ip>
     <firephp></firephp>
     <loglevel>
       <debug></debug>
       <info></info>
-      <notice></notice>
-      <warning></warning>
-      <error></error>
+      <notice>1</notice>
+      <warning>1</warning>
+      <error>1</error>
       <critical>1</critical>
       <alert>1</alert>
       <emergency>1</emergency>
@@ -66,6 +66,8 @@
     </versions>
     <ffmpeg></ffmpeg>
     <qtfaststart></qtfaststart>
+    <icc_rgb_profile></icc_rgb_profile>
+    <icc_cmyk_profile></icc_cmyk_profile>
   </assets>
   <services>
     <googlemaps>
@@ -75,8 +77,9 @@
       <apikey>AIzaSyBbtPCzVQLBZk2Hsi3ysP6Egs6D-b93H0A</apikey>
     </translate>
     <google>
-      <username></username>
-      <password></password>
+      <client_id></client_id>
+      <email></email>
+      <simpleapikey>AIzaSyBbtPCzVQLBZk2Hsi3ysP6Egs6D-b93H0A</simpleapikey>
     </google>
   </services>
   <cache>
@@ -95,14 +98,14 @@
   </outputfilters>
   <email>
     <sender>
-      <name></name>
-      <email></email>
+      <name>DEV 4 - Special Resolution Center</name>
+      <email>nikolaus@flamann.at</email>
     </sender>
     <return>
-      <name></name>
-      <email></email>
+      <name>DEV 4 - Special Resolution Center</name>
+      <email>nikolaus@flamann.at</email>
     </return>
-    <method></method>
+    <method>sendmail</method>
     <smtp>
       <host></host>
       <port></port>
@@ -115,7 +118,7 @@
       </auth>
     </smtp>
     <debug>
-      <emailaddresses></emailaddresses>
+      <emailaddresses>nikolaus@flamann.at</emailaddresses>
     </debug>
   </email>
   <webservice>
