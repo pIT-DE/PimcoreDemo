@@ -13,12 +13,12 @@
             switch (Zend_Registry::get("Zend_Locale")->getLanguage()) {
                 case "de":
                     ?>
-                        <a href="/" class="mn_english"><span>/</span><?=$this->translate("English Version");?></a>
+                        <a href="/" class="mn_english"><?=$this->translate("English Version");?></a>
                         <?php
                     break;
                 default:
                     ?>
-                        <a href="/de" class="mn_english"><span>/</span><?=$this->translate("German Version");?></a>
+                        <a href="/de" class="mn_english"><?=$this->translate("German Version");?></a>
                         <?php
                     break;
             }

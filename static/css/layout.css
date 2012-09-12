@@ -50,6 +50,7 @@ a:active {
 .hidden {
     display: none;
 }
+
 .soon * {
     text-decoration: line-through !important;
     color: #ff9933 !important;
@@ -84,9 +85,23 @@ a:active {
     margin: 0 auto;
 }
 
+#metanav {
+    float: right;
+    padding: 5px 0 0 0;
+}
+
+#metanav a {
+    color: #F93;
+    text-transform: lowercase;
+    text-decoration: none;
+    font-size: 14px;
+
+}
+
 #mainnav {
     list-style: none;
     float: right;
+    clear: right;
 }
 
 #mainnav li {
@@ -128,8 +143,9 @@ a:active {
     min-height: 190px;
     height: auto;
     padding: 5px 0 5px 0;
-    border-top: 1px solid  #8a8f94;
+    border-top: 1px solid #8a8f94;
 }
+
 #mainnav li ul li {
     width: 190px;
     position: static;
@@ -138,15 +154,16 @@ a:active {
 #mainnav li ul a {
     font-size: 14px;
 }
+
 #mainnav li:hover ul {
     display: block;
 }
 
-#mainnav li:hover ul li ul  {
+#mainnav li:hover ul li ul {
     display: none;
     left: 199px;
     top: 0;
-    border-left: 1px solid  #8a8f94;
+    border-left: 1px solid #8a8f94;
 
 }
 
