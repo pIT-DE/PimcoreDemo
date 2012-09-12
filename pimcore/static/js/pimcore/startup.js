@@ -282,7 +282,7 @@ Ext.onReady(function() {
                     id: "pimcore_body",
                     cls: "pimcore_body",
                     layout: "border",
-                    border: false,
+                    border: true,
                     tbar: {
                         ctCls: "pimcore_panel_toolbar_container",
                         id: "pimcore_panel_toolbar",
@@ -314,7 +314,6 @@ Ext.onReady(function() {
                             id: "pimcore_panel_tabs",
                             enableTabScroll:true,
                             hideMode: "offsets",
-                            defaults: {autoScroll:true},
                             cls: "tab_panel"
                         }),{
                             region:'east',
@@ -436,6 +435,42 @@ Ext.onReady(function() {
     mapF5 = new Ext.KeyMap(document, {
         key: [116],
         fn: pimcore.helpers.handleF5,
+        stopEvent: true
+    });
+
+    var openAssetById = new Ext.KeyMap(document, {
+        key: "a",
+        fn: pimcore.helpers.openElementByIdDialog.bind(this, "asset"),
+        ctrl:true,
+        alt: false,
+        shift:true,
+        stopEvent: true
+    });
+
+    var openObjectById = new Ext.KeyMap(document, {
+        key: "o",
+        fn: pimcore.helpers.openElementByIdDialog.bind(this, "object"),
+        ctrl:true,
+        alt: false,
+        shift:true,
+        stopEvent: true
+    });
+
+    var openDocumentById = new Ext.KeyMap(document, {
+        key: "d",
+        fn: pimcore.helpers.openElementByIdDialog.bind(this, "document"),
+        ctrl:true,
+        alt: false,
+        shift:true,
+        stopEvent: true
+    });
+
+    var openDocumentByPath = new Ext.KeyMap(document, {
+        key: "f",
+        fn: pimcore.helpers.openDocumentByPathDialog,
+        ctrl:true,
+        alt: false,
+        shift:true,
         stopEvent: true
     });
 

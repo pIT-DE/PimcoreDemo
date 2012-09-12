@@ -37,8 +37,8 @@ abstract class Pimcore_Controller_Action_Admin extends Pimcore_Controller_Action
 
         // set language
         if(Zend_Registry::isRegistered("Zend_Locale")) {
-            $locale = Zend_Registry::get("Zend_Locale");
-            $this->setLanguage($locale->getLanguage());
+            $locale = (string) Zend_Registry::get("Zend_Locale");
+            $this->setLanguage($locale);
         } else {
             if ($this->_getParam("language")) {
                 $this->setLanguage($this->_getParam("language"));
@@ -95,7 +95,10 @@ abstract class Pimcore_Controller_Action_Admin extends Pimcore_Controller_Action
                     $user = Pimcore_Tool_Authentication::authenticateDigest();
                     if($user instanceof User) {
                         $this->setUser($user);
+
+                        Zend_Registry::set("pimcore_admin_user", $this->getUser());
                         self::$adminInitialized = true;
+
                         return;
                     }
                 }
@@ -166,11 +169,11 @@ abstract class Pimcore_Controller_Action_Admin extends Pimcore_Controller_Action
         }
 
         // check if given language is installed if not => skip
-        if(!in_array($locale->getLanguage(), Pimcore_Tool_Admin::getLanguages())) {
+        if(!in_array((string) $locale, Pimcore_Tool_Admin::getLanguages())) {
             return;
         }
 
-        $this->language = $locale->getLanguage();
+        $this->language = (string) $locale;
         $this->view->language = $this->getLanguage();
 
         Zend_Registry::set("Zend_Locale", $locale);
@@ -208,7 +211,7 @@ abstract class Pimcore_Controller_Action_Admin extends Pimcore_Controller_Action
         
         if(Zend_Registry::isRegistered("Zend_Locale")) {
             $locale = Zend_Registry::get("Zend_Locale");
-            @$translator->setLocale($locale->getLanguage());
+            @$translator->setLocale($locale);
         }
         
         Zend_Registry::set("Zend_Translate", $translator);

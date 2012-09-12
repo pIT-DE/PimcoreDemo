@@ -35,6 +35,37 @@ pimcore.layout.toolbar = Class.create({
             }
         });
 
+        if (user.isAllowed("documents")) {
+            fileItems.push({
+                text: t("open_document_by_url"),
+                iconCls: "pimcore_icon_open_document_by_url",
+                handler: pimcore.helpers.openDocumentByPathDialog
+            });
+
+            fileItems.push({
+                text: t("open_document_by_id"),
+                iconCls: "pimcore_icon_open_document_by_id",
+                handler: pimcore.helpers.openElementByIdDialog.bind(this, "document")
+            });
+        }
+
+        if (user.isAllowed("assets")) {
+            fileItems.push({
+                text: t("open_asset_by_id"),
+                iconCls: "pimcore_icon_open_asset_by_id",
+                handler: pimcore.helpers.openElementByIdDialog.bind(this, "asset")
+            });
+        }
+
+        if (user.isAllowed("objects")) {
+            fileItems.push({
+                text: t("open_object_by_id"),
+                iconCls: "pimcore_icon_open_object_by_id",
+                handler: pimcore.helpers.openElementByIdDialog.bind(this, "object")
+            });
+        }
+
+
         fileItems.push({
             text: t("close_all_tabs"),
             iconCls: "pimcore_icon_menu_close_tabs",
@@ -141,6 +172,11 @@ pimcore.layout.toolbar = Class.create({
                     text: t("qr_codes"),
                     iconCls: "pimcore_icon_qrcode",
                     handler: this.showQRCode
+                },{
+                    text: t("targeting"),
+                    iconCls: "pimcore_icon_tab_targeting",
+                    handler: this.showTargeting,
+                    hidden: !pimcore.settings.targeting_enabled
                 }]
             });
         }
@@ -667,6 +703,26 @@ pimcore.layout.toolbar = Class.create({
         }
         catch (e) {
             pimcore.globalmanager.add("qrcode", new pimcore.report.qrcode.panel());
+        }
+    },
+
+    showTargeting: function () {
+        var tabPanel = Ext.getCmp("pimcore_panel_tabs");
+        try {
+            tabPanel.activate(pimcore.globalmanager.get("targeting").getLayout());
+        }
+        catch (e) {
+            var targeting = new pimcore.settings.targeting.panel();
+            pimcore.globalmanager.add("targeting", targeting);
+
+            tabPanel.add(targeting.getLayout());
+            tabPanel.activate(targeting.getLayout());
+
+            targeting.getLayout().on("destroy", function () {
+                pimcore.globalmanager.remove("targeting");
+            }.bind(this));
+
+            pimcore.layout.refresh();
         }
     },
 

@@ -79,11 +79,12 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
 
         // register global locale if the document has the system property "language"
         if($this->document->getProperty("language")) {
-            $locale = new Zend_Locale($this->document->getProperty("language"));
+            $language = $this->document->getProperty("language");
+            $locale = new Zend_Locale($language);
 		    Zend_Registry::set('Zend_Locale', $locale);
-            $this->getResponse()->setHeader("Content-Language",strtolower(str_replace("_","-", (string) $locale)), true);
+            Zend_Registry::set("Pimcore_Language", $language);
+            $this->getResponse()->setHeader("Content-Language",strtolower(str_replace("_","-", $language)), true);
         }
-
 
         // for editmode
         if ($user) {
@@ -202,20 +203,25 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
     public function initTranslation() {
         
         if(Zend_Registry::isRegistered("Zend_Translate")) {
-            $translator = Zend_Registry::get("Zend_Translate");
+            $translate = Zend_Registry::get("Zend_Translate");
         } else {
             // setup Zend_Translate
             try {
-                $locale = Zend_Registry::get("Zend_Locale");
+                if(Zend_Registry::isRegistered("Pimcore_Language")) {
+                    $language = Zend_Registry::get("Pimcore_Language");
+                } else {
+                    $language = (string) Zend_Registry::get("Zend_Locale");
+                }
+
                 $cacheKey = "translator_website";
 
                 if (!$translate = Pimcore_Model_Cache::load($cacheKey)) {
-                    $translate = new Pimcore_Translate_Website($locale);
+                    $translate = new Pimcore_Translate_Website($language);
                     Pimcore_Model_Cache::save($translate, $cacheKey, array("translator","translator_website","translate"), null, 999);
                 }
 
-                if(Pimcore_Tool::isValidLanguage($locale)) {
-                    $translate->setLocale($locale);    
+                if(Pimcore_Tool::isValidLanguage($language)) {
+                    $translate->setLocale($language);
                 } else {
                     Logger::error("You want to use an invalid language which is not defined in the system settings: " . $locale);
                     // fall back to the first (default) language defined
@@ -238,21 +244,25 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
             }
         }
 
-        return $translator;
+        return $translate;
     }
 
     public function getRenderScript() {
 
+        // try to get the template out of the params
+        if ($this->_getParam("template")) {
+            return $this->_getParam("template");
+        }
+
         // try to get template out of the document object, but only if the parameter `staticroute´ is not set, which indicates
         // if a request comes through a static/custom route (contains the route Object => Staticroute)
         // see PIMCORE-1545
-        if ($this->document instanceof Document && $this->document->getTemplate() && !in_array($this->_getParam("pimcore_request_source"), array("staticroute", "renderlet"))) {
-            return $this->document->getTemplate();
+        if ($this->document instanceof Document && !in_array($this->_getParam("pimcore_request_source"), array("staticroute", "renderlet"))) {
+            if(method_exists($this->document, "getTemplate") && $this->document->getTemplate()) {
+                return $this->document->getTemplate();
+            }
         }
-            // try to get the template out of the params
-        else if ($this->_getParam("template")) {
-            return $this->_getParam("template");
-        }
+
         return null;
     }
 

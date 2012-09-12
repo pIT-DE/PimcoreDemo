@@ -310,7 +310,16 @@ class Admin_ObjectController extends Pimcore_Controller_Action_Admin
             $objectData["userPermissions"] = $object->getUserPermissions();
             $objectData["versions"] = $object->getVersions();
             $objectData["scheduledTasks"] = $object->getScheduledTasks();
-            $objectData["allowedClasses"] = $object->getClass();
+            $objectData["general"]["allowVariants"] = $object->getClass()->getAllowVariants();
+
+            if($object->getElementAdminStyle()->getElementIcon()) {
+                $objectData["general"]["icon"] = $object->getO_elementAdminStyle()->getElementIcon();
+            }
+            if($object->getElementAdminStyle()->getElementIconClass()) {
+                $objectData["general"]["iconCls"] = $object->getO_elementAdminStyle()->getElementIconClass();
+            }
+
+
             if ($object instanceof Object_Concrete) {
                 $objectData["lazyLoadedFields"] = $object->getLazyLoadedFields();
             }
@@ -350,7 +359,14 @@ class Admin_ObjectController extends Pimcore_Controller_Action_Admin
         $getter = "get" . ucfirst($key);
 
         // relations but not for objectsMetadata, because they have additional data which cannot be loaded directly from the DB
-        if (!$objectFromVersion && $fielddefinition instanceof Object_Class_Data_Relations_Abstract and $fielddefinition->getLazyLoading() and !$fielddefinition instanceof Object_Class_Data_ObjectsMetadata) {
+        // nonownerobjects should go in there anyway (regardless if it a version or not), so that the values can be loaded
+        if (
+            (!$objectFromVersion
+            && $fielddefinition instanceof Object_Class_Data_Relations_Abstract
+            && $fielddefinition->getLazyLoading()
+            && !$fielddefinition instanceof Object_Class_Data_ObjectsMetadata )
+            || $fielddefinition instanceof Object_Class_Data_Nonownerobjects
+        ) {
 
             //lazy loading data is fetched from DB differently, so that not every relation object is instantiated
             if ($fielddefinition->isRemoteOwner()) {
@@ -398,11 +414,12 @@ class Admin_ObjectController extends Pimcore_Controller_Action_Admin
                     $this->metaData[$key]['inherited'] = false;
                     $this->metaData[$key]['hasParentValue'] = true;
                 } else {
-                    $parentValue = $this->getParentValue($object, $key);
-                    $this->metaData[$key]['hasParentValue'] = !empty($parentValue->value);
-                    if(!empty($parentValue->value)) {
-                        $this->metaData[$key]['objectid'] = $parentValue->id;
-                    }
+                    // CF: I don't think this code is necessary at all - fact is, that it is buggy
+//                    $parentValue = $this->getParentValue($object, $key);
+//                    $this->metaData[$key]['hasParentValue'] = !empty($parentValue->value);
+//                    if(!empty($parentValue->value)) {
+//                        $this->metaData[$key]['objectid'] = $parentValue->id;
+//                    }
                 }
 
             }
@@ -806,10 +823,18 @@ class Admin_ObjectController extends Pimcore_Controller_Action_Admin
         }
 
         // general settings
+        // @TODO: IS THIS STILL NECESSARY?
         if ($this->_getParam("general")) {
             $general = Zend_Json::decode($this->_getParam("general"));
-            $object->setValues($general);
 
+            // do not allow all values to be set, will cause problems (eg. icon)
+            if (is_array($general) && count($general) > 0) {
+                foreach ($general as $key => $value) {
+                    if(!in_array($key, array("o_id", "o_classId", "o_className", "o_type", "icon"))) {
+                        $object->setValue($key,$value);
+                    }
+                }
+            }
         }
 
         $object = $this->assignPropertiesFromEditmode($object);
@@ -837,6 +862,11 @@ class Admin_ObjectController extends Pimcore_Controller_Action_Admin
         }
         if ($this->_getParam("task") == "publish") {
             $object->setPublished(true);
+        }
+
+        // unpublish and save version is possible without checking mandatory fields
+        if($this->_getParam("task") == "unpublish" || $this->_getParam("task") == "version") {
+            $object->setOmitMandatoryCheck(true);
         }
 
 
@@ -990,6 +1020,7 @@ class Admin_ObjectController extends Pimcore_Controller_Action_Admin
         $currentObject = Object_Abstract::getById($object->getId());
         if ($currentObject->isAllowed("publish")) {
             $object->setPublished(true);
+            $object->setUserModification($this->getUser()->getId());
             try {
                 $object->save();
                 $this->_helper->json(array("success" => true));
@@ -1160,7 +1191,6 @@ class Admin_ObjectController extends Pimcore_Controller_Action_Admin
             $list->setOffset($start);
             $list->setOrder($order);
             $list->setOrderKey($orderKey);
-            $list->setIgnoreLocale(true);
 
             $list->load();
 
@@ -1358,6 +1388,7 @@ class Admin_ObjectController extends Pimcore_Controller_Action_Admin
                         if ($currentData[$i]->getId() == $object->getId()) {
                             unset($currentData[$i]);
                             $owner->$setter($currentData);
+                            $owner->setUserModification($this->getUser()->getId());
                             $owner->save();
                             Logger::debug("Saved object id [ " . $owner->getId() . " ] by remote modification through [" . $object->getId() . "], Action: deleted [ " . $object->getId() . " ] from [ $ownerFieldName]");
                             break;
@@ -1376,6 +1407,7 @@ class Admin_ObjectController extends Pimcore_Controller_Action_Admin
                 $currentData[] = $object;
 
                 $owner->$setter($currentData);
+                $owner->setUserModification($this->getUser()->getId());
                 $owner->save();
                 Logger::debug("Saved object id [ " . $owner->getId() . " ] by remote modification through [" . $object->getId() . "], Action: added [ " . $object->getId() . " ] to [ $ownerFieldName ]");
             }

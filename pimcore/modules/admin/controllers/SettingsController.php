@@ -122,22 +122,15 @@ class Admin_SettingsController extends Pimcore_Controller_Action_Admin {
                 fclose($handle);
             }
 
-            $languages = Zend_Locale::getTranslationList('language');
-
-            asort($languages);
+            $locales = Pimcore_Tool::getSupportedLocales();
             $languageOptions = array();
-            $validLanguages = array();
-            foreach ($languages as $short => $translation) {
-
-                if (strlen($short) == 2 or strpos($short, "_") == 2) {
-                    $languageOptions[] = array(
-                        "language" => $short,
-                        "display" => $translation . " ($short)"
-                    );
-                    $validLanguages[] = $short;
-                }
+            foreach ($locales as $short => $translation) {
+                $languageOptions[] = array(
+                    "language" => $short,
+                    "display" => $translation . " ($short)"
+                );
+                $validLanguages[] = $short;
             }
-
 
             $valueArray = $values->toArray();
             $valueArray['general']['validLanguage'] = explode(",", $valueArray['general']['validLanguages']);
@@ -260,9 +253,11 @@ class Admin_SettingsController extends Pimcore_Controller_Action_Admin {
                         "alert" => $oldValues["general"]["loglevel"]["alert"],
                         "emergency" => $oldValues["general"]["loglevel"]["emergency"],
                     ),
+                    "debug_admin_translations" => $values["general.debug_admin_translations"],
                     "devmode" => $values["general.devmode"],
                     "logrecipient" => $values["general.logrecipient"],
-                    "viewSuffix" => $values["general.viewSuffix"]
+                    "viewSuffix" => $values["general.viewSuffix"],
+                    "targeting" => $values["general.targeting"]
                 ),
                 "database" => $oldValues["database"], // db cannot be changed here
                 "documents" => array(
@@ -303,7 +298,8 @@ class Admin_SettingsController extends Pimcore_Controller_Action_Admin {
                     "google" => array(
                         "client_id" => $values["services.google.client_id"],
                         "email" => $values["services.google.email"],
-                        "simpleapikey" => $values["services.google.simpleapikey"]
+                        "simpleapikey" => $values["services.google.simpleapikey"],
+                        "browserapikey" => $values["services.google.browserapikey"]
                     )
                 ),
                 "cache" => array(
@@ -533,90 +529,92 @@ class Admin_SettingsController extends Pimcore_Controller_Action_Admin {
 
         if ($this->getUser()->isAllowed("translations")) {
             $languages = Pimcore_Tool::getValidLanguages();
-            try {
-                //read import data
-                $tmpData = file_get_contents($_FILES["Filedata"]["tmp_name"]);
-                //convert to utf-8 if needed
-                $encoding = Pimcore_Tool_Text::detectEncoding($tmpData);
-                if ($encoding) {
-                    $tmpData = iconv($encoding, "UTF-8", $tmpData);
-                }
-                //store data for further usage
-                $importFile = PIMCORE_SYSTEM_TEMP_DIRECTORY . "/import_translations";
-                file_put_contents($importFile, $tmpData);
-                chmod($importFile, 0766);
 
-                $importFileOriginal = PIMCORE_SYSTEM_TEMP_DIRECTORY . "/import_translations_original";
-                file_put_contents($importFileOriginal, $tmpData);
-                chmod($importFileOriginal, 0766);
-
-                // determine csv type
-                $dialect = Pimcore_Tool_Admin::determineCsvDialect(PIMCORE_SYSTEM_TEMP_DIRECTORY . "/import_translations_original");
-                //read data
-                if (($handle = fopen(PIMCORE_SYSTEM_TEMP_DIRECTORY . "/import_translations", "r")) !== FALSE) {
-                    while (($rowData = fgetcsv($handle, 10000, $dialect->delimiter, $dialect->quotechar, $dialect->escapechar)) !== false) {
-                        $data[] = $rowData;
-                    }
-                    fclose($handle);
-                }
-                //process translations
-                if (is_array($data) and count($data) > 1) {
-                    $keys = $data[0];
-                    $data = array_slice($data, 1);
-                    foreach ($data as $row) {
-
-                        $keyValueArray = array();
-                        for ($counter = 0; $counter < count($row); $counter++) {
-                            $rd = str_replace("&quot;", '"', $row[$counter]);
-                            $keyValueArray[$keys[$counter]] = $rd;
-                        }
-
-                        $t = null;
-                        if ($keyValueArray["key"]) {
-                            try {
-                                if ($admin) {
-                                    $t = Translation_Admin::getByKey($keyValueArray["key"]);
-                                } else {
-                                    $t = Translation_Website::getByKey($keyValueArray["key"]);
-                                }
-
-                            }
-                            catch (Exception $e) {
-                                Logger::debug("Unable to find translation with key: " . $keyValueArray["key"]);
-                            }
-                        }
-
-
-                        if (!$t instanceof Translation_Abstract) {
-                            if ($admin) {
-                                $t = new Translation_Admin();
-                            } else {
-                                $t = new Translation_Website();
-                            }
-
-                        }
-
-                        $t->setDate(time());
-                        foreach ($keyValueArray as $key => $value) {
-                            if ($key != "key" && $key != "date" && in_array($key, $languages)) {
-                                $t->addTranslation($key, $value);
-                            }
-                        }
-                        if ($keyValueArray["key"]) {
-                            $t->setKey($keyValueArray["key"]);
-                        }
-                        $t->save();
-                    }
-                    $this->_helper->json(array(
-                        "success" => true
-                    ));
-                } else {
-                    throw new Exception("less than 2 rows of data - nothing to import");
-                }
-            } catch (Exception $e) {
-                Logger::error($e);
-                $this->_helper->json(false);
+            //read import data
+            $tmpData = file_get_contents($_FILES["Filedata"]["tmp_name"]);
+            //convert to utf-8 if needed
+            $encoding = Pimcore_Tool_Text::detectEncoding($tmpData);
+            if ($encoding) {
+                $tmpData = iconv($encoding, "UTF-8", $tmpData);
             }
+            //store data for further usage
+            $importFile = PIMCORE_SYSTEM_TEMP_DIRECTORY . "/import_translations";
+            file_put_contents($importFile, $tmpData);
+            chmod($importFile, 0766);
+
+            $importFileOriginal = PIMCORE_SYSTEM_TEMP_DIRECTORY . "/import_translations_original";
+            file_put_contents($importFileOriginal, $tmpData);
+            chmod($importFileOriginal, 0766);
+
+            // determine csv type
+            $dialect = Pimcore_Tool_Admin::determineCsvDialect(PIMCORE_SYSTEM_TEMP_DIRECTORY . "/import_translations_original");
+            //read data
+            if (($handle = fopen(PIMCORE_SYSTEM_TEMP_DIRECTORY . "/import_translations", "r")) !== FALSE) {
+                while (($rowData = fgetcsv($handle, 10000, $dialect->delimiter, $dialect->quotechar, $dialect->escapechar)) !== false) {
+                    $data[] = $rowData;
+                }
+                fclose($handle);
+            }
+            //process translations
+            if (is_array($data) and count($data) > 1) {
+                $keys = $data[0];
+                $data = array_slice($data, 1);
+                foreach ($data as $row) {
+
+                    $keyValueArray = array();
+                    for ($counter = 0; $counter < count($row); $counter++) {
+                        $rd = str_replace("&quot;", '"', $row[$counter]);
+                        $keyValueArray[$keys[$counter]] = $rd;
+                    }
+
+                    $t = null;
+                    if ($keyValueArray["key"]) {
+                        try {
+                            if ($admin) {
+                                $t = Translation_Admin::getByKey($keyValueArray["key"]);
+                            } else {
+                                $t = Translation_Website::getByKey($keyValueArray["key"]);
+                            }
+
+                        }
+                        catch (Exception $e) {
+                            Logger::debug("Unable to find translation with key: " . $keyValueArray["key"]);
+                        }
+                    }
+
+
+                    if (!$t instanceof Translation_Abstract) {
+                        if ($admin) {
+                            $t = new Translation_Admin();
+                        } else {
+                            $t = new Translation_Website();
+                        }
+
+                    }
+
+                    $t->setDate(time());
+                    foreach ($keyValueArray as $key => $value) {
+                        if ($key != "key" && $key != "date" && in_array($key, $languages)) {
+                            $t->addTranslation($key, $value);
+                        }
+                    }
+                    if ($keyValueArray["key"]) {
+                        $t->setKey($keyValueArray["key"]);
+                    }
+                    $t->save();
+                }
+                $this->_helper->json(array(
+                    "success" => true
+                ), false);
+
+                // set content-type to text/html, otherwise (when application/json is sent) chrome will complain in
+                // Ext.form.Action.Submit and mark the submission as failed
+                $this->getResponse()->setHeader("Content-Type", "text/html");
+
+            } else {
+                throw new Exception("less than 2 rows of data - nothing to import");
+            }
+
 
         } else {
             Logger::err("user [" . $this->getUser()->getId() . "] attempted to import translations csv, but has no permission to do so.");
@@ -820,7 +818,7 @@ class Admin_SettingsController extends Pimcore_Controller_Action_Admin {
                 $list->setOffset($this->_getParam("start"));
                 if ($this->_getParam("filter")) {
                     $filterTerm = $list->quote("%".strtolower($this->_getParam("filter"))."%");
-                    $list->setCondition("lower(`key`) LIKE " . $filterTerm . " OR `text` LIKE " . $filterTerm);
+                    $list->setCondition("lower(`key`) LIKE " . $filterTerm . " OR lower(`text`) LIKE " . $filterTerm);
                 }
                 $list->load();
 
@@ -868,12 +866,15 @@ class Admin_SettingsController extends Pimcore_Controller_Action_Admin {
 
         $langs = array();
         $availableLanguages = Pimcore_Tool_Admin::getLanguages();
+        $locales = Pimcore_Tool::getSupportedLocales();
 
         foreach ($availableLanguages as $lang) {
-            $langs[] = array(
-                "language" => $lang,
-                "display" => Zend_Locale::getTranslation($lang, 'language', $lang)
-            );
+            if(array_key_exists($lang, $locales)) {
+                $langs[] = array(
+                    "language" => $lang,
+                    "display" => $locales[$lang]
+                );
+            }
         }
 
         $this->_helper->json($langs);
@@ -1187,7 +1188,7 @@ class Admin_SettingsController extends Pimcore_Controller_Action_Admin {
         $writer->write();
 
         // clear cache
-        Pimcore_Model_Cache::clearTags(array("output", "system"));
+        Pimcore_Model_Cache::clearTags(array("output", "system","website_config"));
 
 
         $this->_helper->json(array("success" => true));
@@ -1434,7 +1435,7 @@ class Admin_SettingsController extends Pimcore_Controller_Action_Admin {
 
         $robotsPath = PIMCORE_CONFIGURATION_DIRECTORY . "/robots.txt";
 
-        if($this->_getParam("data")) {
+        if($this->_getParam("data") !== null) {
             // save data
             file_put_contents($robotsPath, $this->_getParam("data"));
 

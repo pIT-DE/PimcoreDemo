@@ -101,8 +101,7 @@ class Version_Resource extends Pimcore_Model_Resource_Abstract {
     }
 
     /**
-     * @deprecated
-     * @param integer $days
+     * @param $steps
      * @return array
      */
     public function getOutdatedVersionsSteps($steps) {
@@ -111,7 +110,7 @@ class Version_Resource extends Pimcore_Model_Resource_Abstract {
     }
 
     /**
-     * @param $types
+     * @param $elementTypes
      * @return array
      */
     public function maintenanceGetOutdatedVersions ($elementTypes) {
@@ -131,6 +130,12 @@ class Version_Resource extends Pimcore_Model_Resource_Abstract {
                     foreach ($elementIds as $elementId) {
                         $elementVersions = $this->db->fetchCol("SELECT id FROM versions WHERE cid = ? and ctype = ? ORDER BY date DESC LIMIT " . $elementType["steps"] . ",1000000", array($elementId, $elementType["elementType"]));
                         $versionIds = array_merge($versionIds, $elementVersions);
+
+                        // call the garbage collector if memory consumption is > 100MB
+                        if(memory_get_usage() > 100000000) {
+                            Pimcore::collectGarbage();
+                            $versionIds = array_unique($versionIds);
+                        }
                     }
 
                     $versionIds = array_unique($versionIds);

@@ -28,15 +28,22 @@ class Pimcore_Google_Analytics {
         
         $siteKey = Pimcore_Tool_Frontend::getSiteKey($site);
         
-        if(Pimcore_Config::getReportConfig()->analytics->sites->$siteKey) {
+        $config = Pimcore_Config::getReportConfig();
+        if (!$config->analytics) {
+            return false;
+        }
+
+        if($config->analytics->sites->$siteKey) {
             return Pimcore_Config::getReportConfig()->analytics->sites->$siteKey;
         }
         return false;
     }
     
-    public static function getCode () {
+    public static function getCode ($config = null) {
                 
-        $config = self::getSiteConfig();
+        if(is_null($config)){
+            $config = self::getSiteConfig();
+        }
         
         // do nothing if not configured
         if(!$config || !$config->trackid) {

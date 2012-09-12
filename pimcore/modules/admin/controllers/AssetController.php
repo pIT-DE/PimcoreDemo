@@ -81,7 +81,10 @@ class Admin_AssetController extends Pimcore_Controller_Action_Admin {
                         $imageInfo["exif"] = array();
                         foreach($exif as $name => $value) {
                             if((is_string($value) && strlen($value) < 50) || is_numeric($value)) {
-                                $imageInfo["exif"][$name] = $value;
+                                // this is to ensure that the data can be converted to json (must be utf8)
+                                if(mb_check_encoding($value, "UTF-8")) {
+                                    $imageInfo["exif"][$name] = $value;
+                                }
                             }
                         }
                     }
@@ -284,25 +287,24 @@ class Admin_AssetController extends Pimcore_Controller_Action_Admin {
         $asset = Asset::getById($this->_getParam("id"));
         $asset->setData(file_get_contents($_FILES["Filedata"]["tmp_name"]));
         $asset->setCustomSetting("thumbnails",null);
+        $asset->setUserModification($this->getUser()->getId());
 
         if ($asset->isAllowed("publish")) {
+            $asset->save();
 
-            try {
-                $asset->save();
+            $this->_helper->json(array(
+                "id" => $asset->getId(),
+                "path" => $asset->getPath() . $asset->getFilename(),
+                "success" => true
+            ), false);
 
-                $this->_helper->json(array(
-                    "id" => $asset->getId(),
-                    "path" => $asset->getPath() . $asset->getFilename(),
-                    "success" => true
-                ));
-            } catch (Exception $e) {
-                $this->_helper->json(array("success" => false, "message" => $e->getMessage()));
-            }
+            // set content-type to text/html, otherwise (when application/json is sent) chrome will complain in
+            // Ext.form.Action.Submit and mark the submission as failed
+            $this->getResponse()->setHeader("Content-Type", "text/html");
 
-
+        } else {
+            throw new Exception("missing permission");
         }
-
-        $this->_helper->json(array("success" => false, "message" => "missing_permission"));
     }
 
     public function addFolderAction() {
@@ -487,6 +489,7 @@ class Admin_AssetController extends Pimcore_Controller_Action_Admin {
                     $asset->save();
                 }
 
+                // we need the dimensions for the wysiwyg editors, so that they can resize the image immediately
                 if($asset->getCustomSetting("imageWidth") && $asset->getCustomSetting("imageHeight")) {
                     $tmpAsset["imageWidth"] = $asset->getCustomSetting("imageWidth");
                     $tmpAsset["imageHeight"] = $asset->getCustomSetting("imageHeight");
@@ -525,10 +528,12 @@ class Admin_AssetController extends Pimcore_Controller_Action_Admin {
         $success = false;
         $allowUpdate = true;
 
-        $updateData = $this->_getAllParams();
+        $updateData = $this->getAllParams();
 
         $asset = Asset::getById($this->_getParam("id"));
         if ($asset->isAllowed("settings")) {
+
+            $asset->setUserModification($this->getUser()->getId());
 
             // if the position is changed the path must be changed || also from the childs
             if ($this->_getParam("parentId")) {
@@ -605,6 +610,19 @@ class Admin_AssetController extends Pimcore_Controller_Action_Admin {
             $publicDir = new Asset_WebDAV_Folder($homeDir);
             $objectTree = new Asset_WebDAV_Tree($publicDir);
             $server = new Sabre_DAV_Server($objectTree);
+
+            $lockBackend = new Sabre_DAV_Locks_Backend_File(PIMCORE_WEBDAV_TEMP . '/locks.dat');
+            $lockPlugin = new Sabre_DAV_Locks_Plugin($lockBackend);
+            $server->addPlugin($lockPlugin);
+
+            $plugin = new Sabre_DAV_Browser_Plugin();
+            $server->addPlugin($plugin);
+
+            //$server->addPlugin(new Sabre_DAV_Mount_Plugin());
+
+            //$tffp = new Sabre_DAV_TemporaryFileFilterPlugin(PIMCORE_WEBDAV_TEMP);
+            //$tffp->temporaryFilePatterns[] = "'/^~.(.*)tmp$/'"; // photoshop
+            //$server->addPlugin($tffp);
 
             $server->exec();
         } catch (Exception $e) {
@@ -708,6 +726,7 @@ class Admin_AssetController extends Pimcore_Controller_Action_Admin {
         $currentAsset = Asset::getById($asset->getId());
         if ($currentAsset->isAllowed("publish")) {
             try {
+                $asset->setUserModification($this->getUser()->getId());
                 $asset->save();
                 $this->_helper->json(array("success" => true));
             } catch (Exception $e) {
@@ -764,7 +783,7 @@ class Admin_AssetController extends Pimcore_Controller_Action_Admin {
             if($this->_getParam("config")) {
                 $thumbnail = $image->getThumbnailConfig(Zend_Json::decode($this->_getParam("config")));
             } else {
-                $thumbnail = $image->getThumbnailConfig($this->_getAllParams());
+                $thumbnail = $image->getThumbnailConfig($this->getAllParams());
             }
         }
         
@@ -782,7 +801,7 @@ class Admin_AssetController extends Pimcore_Controller_Action_Admin {
                 "x" => $this->_getParam("cropLeft")
             ));
 
-            $hash = md5(Pimcore_Tool_Serialize::serialize($this->_getAllParams()));
+            $hash = md5(Pimcore_Tool_Serialize::serialize($this->getAllParams()));
             $thumbnail->setName("auto_" . $hash);
         }
 
@@ -811,7 +830,7 @@ class Admin_AssetController extends Pimcore_Controller_Action_Admin {
     public function getVideoThumbnailAction() {
 
         $video = Asset::getById(intval($this->_getParam("id")));
-        $thumbnail = $video->getImageThumbnailConfig($this->_getAllParams());
+        $thumbnail = $video->getImageThumbnailConfig($this->getAllParams());
 
         $format = strtolower($thumbnail->getFormat());
         if ($format == "source") {
@@ -1154,6 +1173,37 @@ class Admin_AssetController extends Pimcore_Controller_Action_Admin {
         $this->_helper->json(array("success" => $success));
     }
 
+    public function importUrlAction() {
+        $success = true;
+
+        $data = Pimcore_Tool::getHttpData($this->_getParam("url"));
+        $filename = basename($this->_getParam("url"));
+        $parentId = $this->_getParam("id");
+        $parentAsset = Asset::getById(intval($parentId));
+
+        $filename = Pimcore_File::getValidFilename($filename);
+        if(empty($filename)) {
+            throw new Exception("The filename of the asset is empty");
+        }
+
+        // check for dublicate filename
+        $filename = $this->getSafeFilename($parentAsset->getFullPath(), $filename);
+
+        if ($parentAsset->isAllowed("create")) {
+            $asset = Asset::create($parentId, array(
+                "filename" => $filename,
+                "data" => $data,
+                "userOwner" => $this->user->getId(),
+                "userModification" => $this->user->getId()
+            ));
+            $success = true;
+        } else {
+            Logger::debug("prevented creating asset because of missing permissions");
+        }
+
+        $this->_helper->json(array("success" => $success));
+    }
+
     protected function importFromFileSystem ($path, $parentId) {
 
         $assetFolder = Asset::getById($parentId);
@@ -1197,6 +1247,10 @@ class Admin_AssetController extends Pimcore_Controller_Action_Admin {
             $parts = array_slice($parts, 1);
             $parentPath = "/";
             foreach ($parts as $part) {
+                if($part == ''){
+                    continue;
+                }
+
                 $parent = Asset_Folder::getByPath($parentPath);
                 if ($parent instanceof Asset_Folder) {
 

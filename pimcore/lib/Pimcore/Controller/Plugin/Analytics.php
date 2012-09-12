@@ -16,15 +16,10 @@
 class Pimcore_Controller_Plugin_Analytics extends Zend_Controller_Plugin_Abstract {
 
     protected $enabled = true;
-    protected $document;
 
     public function routeShutdown(Zend_Controller_Request_Abstract $request) {
         if(!Pimcore_Tool::useFrontendOutputFilters($request)) {
             return $this->disable();
-        }
-        
-        if($request->getParam("document") instanceof Document_Page) {
-            $this->document = $request->getParam("document");
         }
     }
 
@@ -42,9 +37,7 @@ class Pimcore_Controller_Plugin_Analytics extends Zend_Controller_Plugin_Abstrac
         if ($this->enabled && $code = Pimcore_Google_Analytics::getCode()) {
             
             // analytics
-            include_once("simple_html_dom.php");
             $body = $this->getResponse()->getBody();
-
 
             // search for the end <head> tag, and insert the google analytics code before
             // this method is much faster than using simple_html_dom and uses less memory

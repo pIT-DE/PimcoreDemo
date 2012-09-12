@@ -26,14 +26,14 @@ $this->placeholder("headline")->set("Coming Soon");
             <a href="http://www.pimcore.org/board/viewforum.php?f=28" target="_blank">Pimcore Demo Forum</a>
         </li>
         <li>
-            <a href="https://github.com/ElementsDev4/PimcoreDemo" target="_blank">Github</a>
+            <a href="https://github.com/Nikolayya/PimcoreDemo" target="_blank">Github</a>
         </li>
     </ul>
     <h2>Roadmap (pleace understand us that we make the demo in our free time)</h2>
     <ul>
         <li>May 2012: Simple Examples: Standard Input Types, ObjectList, ObjectDetail</li>
-        <li>Juni 2012: Beginner Examples: Areas, Renderlets, Properties ...</li>
-        <li>July 2012: Simple Objects, Field Collections, Briks, ...</li>
+        <li>Oct 2012: Beginner Examples: Areas, Renderlets, Properties ...</li>
+        <li>Nov 2012: Simple Objects, Field Collections, Briks, ...</li>
     </ul>
 
     <h2>In your interest:</h2>

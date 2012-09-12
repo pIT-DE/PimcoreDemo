@@ -126,6 +126,40 @@ class Pimcore_Tool {
 
     /**
      * @static
+     */
+    public static function getSupportedLocales() {
+
+        // we use the locale here, because Zend_Translate only supports locales not "languages"
+        $languages = Zend_Locale::getLocaleList();
+        $languageOptions = array();
+        foreach ($languages as $code => $active) {
+            if($active) {
+                $translation = Zend_Locale::getTranslation($code, "language");
+                if(!$translation) {
+                    $tmpLocale = new Zend_Locale($code);
+                    $lt = Zend_Locale::getTranslation($tmpLocale->getLanguage(), "language");
+                    $tt = Zend_Locale::getTranslation($tmpLocale->getRegion(), "territory");
+
+                    if($lt && $tt) {
+                        $translation = $lt ." (" . $tt . ")";
+                    }
+                }
+
+                if(!$translation) {
+                    $translation = $code;
+                }
+
+                $languageOptions[$code] = $translation;
+            }
+        }
+
+        asort($languageOptions);
+
+        return $languageOptions;
+    }
+
+    /**
+     * @static
      * @return array
      */
     public static function getRoutingDefaults() {
@@ -296,9 +330,9 @@ class Pimcore_Tool {
      * @param  $subject
      * @return Pimcore_Mail
      */
-    public static function getMail($recipients = null, $subject = null) {
+    public static function getMail($recipients = null, $subject = null, $charset = null) {
 
-        $mail = new Pimcore_Mail();
+        $mail = new Pimcore_Mail($charset);
 
         if($recipients) {
             if(is_string($recipients)) {
@@ -423,23 +457,6 @@ class Pimcore_Tool {
         }
 
         return $targetClassName;
-    }
-
-    /**
-     * @static
-     * @return void
-     */
-    public static function registerClassModelMappingNamespaces () {
-
-        $autoloader = Zend_Loader_Autoloader::getInstance();
-        if($map = Pimcore_Config::getModelClassMappingConfig()) {
-            $map = $map->toArray();
-
-            foreach ($map as $targetClass) {
-                $classParts = explode("_", $targetClass);
-                $autoloader->registerNamespace($classParts[0]);
-            }
-        }
     }
 
     /**
