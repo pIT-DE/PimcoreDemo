@@ -6,15 +6,9 @@
 
 
 $this->headScript()->prependFile(
-    '/static/js/lib/jquery-1.7.1.min.js',
+    '/static/js/lib/jquery-1.8.1.min.js',
     'text/javascript'
 );
-
-$this->headScript()->prependFile(
-    '/static/js/lib/less-1.3.0.min.js',
-    'text/javascript'
-);
-
 
 if ($this->placeholder("lightbox")->getValue() === true) {
     $this->headScript()->appendFile(

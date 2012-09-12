@@ -60,7 +60,7 @@ body.portal #content {
 }
 
 .speciallink {
-    background: #E0E1E2 url(/static/img/sprite.png) no-repeat 23px -629px;
+    background: #E0E1E2 url(/static/img/layout/sprite.png) no-repeat 23px -629px;
     padding: 17px 10px 17px 49px;
     margin: 5px 0 20px 0;
     display: block;

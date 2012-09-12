@@ -11,8 +11,16 @@
  *
  */
 
-$this->template("includes/head.php");
+$language = Zend_Registry::get("Zend_Locale")->getLanguage();
 
+?>
+<!DOCTYPE html>
+<html lang="<?=$language;?>" >
+<?php
+$this->template("includes/head.php");
+?>
+</html>
+<?php
 
 $class = "content";
 
@@ -21,7 +29,7 @@ if ($this->portal) {
 }
 ?>
 
-<body class="clearfix <?=$class;?>">
+<body class="<?=$class;?>" lang="<?=$language;?>">
 <div id="content">
     <div class="limiter">
 
@@ -33,12 +41,10 @@ if ($this->portal) {
 
         if ($this->portal) {
             echo $this->layout()->content;
-        }
-        else {
+        } else {
             if (count($this->placeholder("headline")->getValue()) > 0) {
                 echo "<h1>" . $this->placeholder("headline") . "</h1>";
-            }
-            else {
+            } else {
                 echo "<h1>" . $this->input("Headline") . "</h1>";
             }
             ?>
@@ -68,12 +74,8 @@ if ($this->portal) {
 
 $this->template("includes/header.php");
 
-if ($this->portal) {
-    $this->template("content/includes/slider.php");
-}
 $this->template("includes/loader.php");
 
 ?>
 </body>
-<?php
-echo "</html>";
+</html>
