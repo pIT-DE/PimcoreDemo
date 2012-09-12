@@ -7,49 +7,19 @@
  * @var $this Pimcore_View
  */
 
-
-$class = "";
-if (!$this->portal) {
-    $class = "content";
-}
-
 $language = Zend_Registry::get("Zend_Locale")->getLanguage();
-
-
-echo <<<EOD
-<!--<!doctype html>-->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!--[if IEMobile 7]><html class="no-js iem7 oldie $class"><![endif]-->
-<!--[if lt IE 7]><html class="no-js ie6 oldie $class" lang="$language"><![endif]-->
-<!--[if (IE 7)&!(IEMobile)]><html class="no-js ie7 oldie $class" lang="$language"><![endif]-->
-<!--[if (IE 8)&!(IEMobile)]><html class="no-js ie8 oldie $class" lang="$language"><![endif]-->
-<!--[if gt IE 8]><!--><html class="no-js $class" lang="$language"><!--<![endif]-->
-<!--[if (gte IE 9)|(gt IEMobile 7)]><!--><html class="no-js $class" lang="$language"><!--<![endif]-->
-<head lang="$language">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta http-equiv="content-language" content="$language"/>
-    <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name=”robots” content=”noodp”>
-    <link href='http://fonts.googleapis.com/css?family=Spicy+Rice' rel='stylesheet' type='text/css'>
-EOD;
-
 
 $this->headTitle()->setSeparator(" " . $this->translate("|") . " ");
 
 $this->headTitle($this->translate("Pimcore Demo Project"));
 
-echo $this->headTitle();
-
 if (!$this->editmode and $this->document instanceof Document) {
 
     if (strlen($this->document->getDescription()) > 0) {
         $this->headMeta()->appendHttpEquiv('description', $this->document->getDescription());
-    }
-    else if ($this->placeholder("metaset")->getValue() === true) {
+    } else if ($this->placeholder("metaset")->getValue() === true) {
         // Content is set
-    }
-    else {
+    } else {
         $this->headMeta()->appendHttpEquiv('description', $this->translate("head.description"));
     }
 
@@ -64,23 +34,35 @@ if (!$this->editmode and $this->document instanceof Document) {
  * Load My CSS Files
  */
 
-$this->headLink()->appendStylesheet(
+$this->headLink()->prependStylesheet(
     array(
-        'href' => '/static/css/styles.less',
-        'rel' => 'stylesheet/less',
-        'media' => 'screen',
-        'type' => 'text/less'
-    )
-);
-$this->headLink()->appendStylesheet(
-    array(
-        'href' => '/static/css/style.css',
+        'href' => '/static/css/layout.css',
         'rel' => 'stylesheet',
-        'media' => 'screen',
+        'media' => 'all',
         'type' => 'text/css'
     )
 );
 
+if ($this->_getParam("pimcore"))     {
+
+
+    $this->headLink()->appendStylesheet(
+        array(
+            'href' => '/static/css/styles.less',
+            'rel' => 'stylesheet/less',
+            'media' => 'screen',
+            'type' => 'text/less'
+        )
+    );
+    $this->headLink()->appendStylesheet(
+        array(
+            'href' => '/static/css/style.css',
+            'rel' => 'stylesheet',
+            'media' => 'screen',
+            'type' => 'text/css'
+        )
+    );
+}
 if ($this->placeholder("colorbox")->getValue() === true) {
 
     $this->headLink()->appendStylesheet(
@@ -144,6 +126,13 @@ $this->headLink()->appendStylesheet(
 
 $this->headLink()->appendStylesheet('/static/css/ie.css', 'screen', 'lt IE 9');
 
+/**
+ * Output all Header Information
+ */
+
+echo $this->headTitle();
+echo $this->headStyle();
+echo $this->headLink();
 
 if (!Pimcore_Google_Analytics::isConfigured() and !Pimcore_Google_Analytics::getCode()) {
     ?>
@@ -155,6 +144,3 @@ if (!Pimcore_Google_Analytics::isConfigured() and !Pimcore_Google_Analytics::get
 <?php
 }
 
-echo $this->headStyle();
-echo $this->headLink();
-echo "</head>";

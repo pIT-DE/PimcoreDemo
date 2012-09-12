@@ -1,0 +1,298 @@
+/**
+ * Standard CSS File Pimcore Demo
+ * by Nikolaus Flamann
+ */
+
+* {
+    font-family: Tahoma, Arial;
+    font-size: 14px;
+}
+
+html,
+body {
+    position: relative;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    margin: 0 auto;
+    background: #A6AAAD url(/static/img/layout/bg.jpg) repeat-y center top;
+}
+
+/**
+* Standard Styles
+*/
+
+h2 {
+    color: #29323B;
+    font-size: 20px;
+    padding: 0;
+    width: auto;
+
+}
+
+h3 {
+    color: #2C353E;
+    font-weight: normal;
+    font-size: 20px;
+    padding: 0 0 5px 0;
+    border-bottom: 1px solid #CACCCF;
+    text-transform: lowercase;
+    margin: 0 0 15px 0;
+}
+
+a:hover,
+a:active {
+    outline: 0;
+}
+
+.hidden {
+    display: none;
+}
+.soon * {
+    text-decoration: line-through !important;
+    color: #ff9933 !important;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+/**
+* Setting up my Header
+*/
+#header {
+    background: #141E28;;
+    overflow: visible;
+    height: 100px;
+    z-index: 100;
+    position: absolute;
+    width: 100%;
+    float: left;
+    left: 0;
+    top: 0;
+}
+
+#header .limiter {
+    width: 970px;
+    position: relative;
+    margin: 0 auto;
+}
+
+#mainnav {
+    list-style: none;
+    float: right;
+}
+
+#mainnav li {
+    font-weight: normal;
+    color: #8a8f94;
+    font-size: 20px;
+    float: left;
+    margin: 0 0 0 10px;
+    background: none;
+    list-style: none;
+    position: relative;
+}
+
+#mainnav a:hover {
+    text-decoration: none;
+    color: #fff;
+}
+
+#mainnav  a {
+    color: #8a8f94;
+    text-transform: lowercase;
+    text-decoration: none;
+    font-size: 20px;
+}
+
+#mainnav .current a {
+    color: #fe0000;
+}
+
+#mainnav li ul {
+    width: 190px;
+    position: absolute;
+    left: 0;
+    top: 24px;
+    z-index: 20;
+    display: none;
+    background: #001428;
+    margin: 0 0 0 -16px;
+    min-height: 190px;
+    height: auto;
+    padding: 5px 0 5px 0;
+    border-top: 1px solid  #8a8f94;
+}
+#mainnav li ul li {
+    width: 190px;
+    position: static;
+}
+
+#mainnav li ul a {
+    font-size: 14px;
+}
+#mainnav li:hover ul {
+    display: block;
+}
+
+#mainnav li:hover ul li ul  {
+    display: none;
+    left: 199px;
+    top: 0;
+    border-left: 1px solid  #8a8f94;
+
+}
+
+#mainnav li:hover ul li:hover ul {
+    display: block;
+}
+
+span {
+    margin: 0 5px 0 0;
+}
+
+#logo {
+    left: 0;
+    top: 20px;
+    width: 310px;
+    z-index: 200;
+    height: 74px;
+    position: absolute;
+}
+
+/**
+* Standard Content Area
+*/
+
+#content {
+    top: 110px;
+    width: 100%;
+    position: absolute;
+    left: 0;
+}
+
+#content .limiter {
+    width: 970px;
+    position: relative;
+    margin: 0 auto;
+}
+
+#content .breadcrumbs {
+    margin: 0 15px 30px 0;
+    display: inline-block;
+    padding: 0;
+    float: left;
+    width: 100%;
+    border-bottom: none;
+
+}
+
+#content .breadcrumbs a {
+    margin: 0 6px 0 0;
+    color: #8A8F94;
+    text-decoration: none;
+    font-size: 16px;
+
+}
+
+#content .leftcol {
+    width: 640px;
+    margin: 0;
+    padding: 0 0 30px 0;
+    float: left;
+}
+
+#content .contentblock {
+    margin: 0 0 25px 0;
+}
+
+#content .contentblock h2 {
+    margin: 0 0 15px 0;
+}
+
+#content .contentblock  ul {
+    list-style-type: none;
+    margin: 0 0 0 -24px;
+    padding: 0 0 0 24px;
+
+}
+
+#content .contentblock ul li {
+    color: #29323B;
+    margin: 0 0 5px 0;
+    background: url(/static/img/layout/sprite.png) no-repeat left -257px;
+    padding: 0 0 0 17px;
+}
+
+#content .contentblock a {
+    color: #F30;
+}
+
+#content .contentblock table {
+    width: 100%;
+    border: 1px solid #000;
+    border-collapse: collapse;
+    padding: 3px;
+    margin: 3px;
+}
+
+#content .codeview {
+    font-size: 12px;
+    background-color: blanchedAlmond;
+    padding: 5px 10px;
+    margin: 10px;
+}
+
+#content .rightcol {
+    width: 270px;
+    border-radius: 3px;
+    padding: 20px 20px 20px 20px;
+    -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    margin: 0 0 20px 0;
+    float: right;
+    position: relative;
+    background: transparent url(/static/img/layout/transparent_2px.png);
+}
+
+#content .rightcol .line {
+    font-size: 15px;
+    color: #5B6269;
+    font-family: Arial;
+}
+
+#content .rightcol strong {
+    color: #434B53;
+    display: block;
+    margin: 10px 0
+}
+
+#content .rightcol a {
+    font-size: 18px;
+    color: #2C353E;
+    display: inline-block;
+    background: url(/static/img/layout/sprite.png) no-repeat 0 -642px;
+    padding: 2px 0 2px 26px;
+    margin: 5px 0 5px 0;
+}
+
+#content .rightcol a:hover {
+    color: #f30;
+    text-decoration: none;
+}
+
+/**
+* Footer
+*/
+
+#footer {
+    display: none;
+}
