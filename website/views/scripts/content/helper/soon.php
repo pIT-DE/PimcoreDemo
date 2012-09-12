@@ -17,7 +17,7 @@ $this->placeholder("headline")->set("Coming Soon");
     <h2>this is a "coming Soon" Page"</h2>
 
     <p>
-        we plan to add much nice examples in this side, pleace wait a while, we'll come back ;-)
+        i plan to add much nice examples in this side, pleace wait a while, we'll come back ;-)
     </p>
 
     <h2>take a look</h2>
@@ -29,7 +29,7 @@ $this->placeholder("headline")->set("Coming Soon");
             <a href="https://github.com/Nikolayya/PimcoreDemo" target="_blank">Github</a>
         </li>
     </ul>
-    <h2>Roadmap (pleace understand us that we make the demo in our free time)</h2>
+    <h2>Roadmap (pleace understand me that i make the demo in my free time)</h2>
     <ul>
         <li>May 2012: Simple Examples: Standard Input Types, ObjectList, ObjectDetail</li>
         <li>Oct 2012: Beginner Examples: Areas, Renderlets, Properties ...</li>
@@ -39,7 +39,7 @@ $this->placeholder("headline")->set("Coming Soon");
     <h2>In your interest:</h2>
 
     <p>
-        The Pimcore demo project is a recreational project. We do this in terms of open source. For comments and
+        The Pimcore demo project is a recreational project. I do this in terms of open source. For comments and
         suggestions please look in the forum
     </p>
 
