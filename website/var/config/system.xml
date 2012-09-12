@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 <zend-config xmlns:zf="http://framework.zend.com/xml/zend-config-xml/1.0/">
   <general>
-    <timezone>Europe/Berlin</timezone>
+    <timezone>Europe/Vienna</timezone>
     <php_cli>/usr/local/zend/bin/php</php_cli>
     <domain>dev4.pimcore.org</domain>
     <language>de</language>
     <validLanguages>en_GB,de_AT</validLanguages>
-    <theme>/pimcore/static/js/lib/ext/resources/css/xtheme-gray.css</theme>
+    <theme></theme>
     <loginscreenimageservice>1</loginscreenimageservice>
     <loginscreencustomimage></loginscreencustomimage>
     <debug>1</debug>
-    <debug_ip>62.99.163.106</debug_ip>
+    <debug_ip></debug_ip>
     <firephp></firephp>
     <loglevel>
       <debug></debug>
@@ -22,9 +22,11 @@
       <alert>1</alert>
       <emergency>1</emergency>
     </loglevel>
+    <debug_admin_translations></debug_admin_translations>
     <devmode></devmode>
     <logrecipient></logrecipient>
     <viewSuffix></viewSuffix>
+    <targeting></targeting>
   </general>
   <database>
     <adapter>Pdo_Mysql</adapter>
@@ -70,9 +72,6 @@
     <icc_cmyk_profile></icc_cmyk_profile>
   </assets>
   <services>
-    <googlemaps>
-      <apikey>AIzaSyBbtPCzVQLBZk2Hsi3ysP6Egs6D-b93H0A</apikey>
-    </googlemaps>
     <translate>
       <apikey>AIzaSyBbtPCzVQLBZk2Hsi3ysP6Egs6D-b93H0A</apikey>
     </translate>
@@ -80,6 +79,7 @@
       <client_id></client_id>
       <email></email>
       <simpleapikey>AIzaSyBbtPCzVQLBZk2Hsi3ysP6Egs6D-b93H0A</simpleapikey>
+      <browserapikey></browserapikey>
     </google>
   </services>
   <cache>
@@ -89,20 +89,20 @@
     <excludeCookie>pimcore_admin_sid</excludeCookie>
   </cache>
   <outputfilters>
-    <imagedatauri>1</imagedatauri>
+    <imagedatauri></imagedatauri>
     <less>1</less>
     <lesscpath></lesscpath>
-    <cssminify>1</cssminify>
-    <javascriptminify>1</javascriptminify>
+    <cssminify></cssminify>
+    <javascriptminify></javascriptminify>
     <javascriptminifyalgorithm>jsmin</javascriptminifyalgorithm>
   </outputfilters>
   <email>
     <sender>
-      <name>DEV 4 - Special Resolution Center</name>
+      <name>Pimcore Demo - Nikolaus Flamann</name>
       <email>nikolaus@flamann.at</email>
     </sender>
     <return>
-      <name>DEV 4 - Special Resolution Center</name>
+      <name>Pimcore Demo - Nikolaus Flamann</name>
       <email>nikolaus@flamann.at</email>
     </return>
     <method>sendmail</method>
