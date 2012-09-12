@@ -148,6 +148,15 @@ class Site extends Pimcore_Model_Abstract {
     }
 
     /**
+     * returns the main domain of the site (first domain in list)
+     * @return string
+     */
+    public function getMainDomain() {
+        $domains = $this->getDomains();
+        return trim((string) $domains[0]);
+    }
+
+    /**
      * @return integer
      */
     public function getRootId() {
@@ -166,7 +175,7 @@ class Site extends Pimcore_Model_Abstract {
      * @return void
      */
     public function setId($id) {
-        $this->id = $id;
+        $this->id = (int) $id;
     }
 
     /**
@@ -185,7 +194,7 @@ class Site extends Pimcore_Model_Abstract {
      * @return void
      */
     public function setRootId($rootId) {
-        $this->rootId = $rootId;
+        $this->rootId = (int) $rootId;
 
         $rd = Document::getById($this->rootId);
         $this->setRootDocument($rd);

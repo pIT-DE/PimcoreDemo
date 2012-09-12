@@ -222,6 +222,13 @@ class Admin_ObjectHelperController extends Pimcore_Controller_Action_Admin {
         });
 
         $language = $this->getLanguage();
+
+        if(!Pimcore_Tool::isValidLanguage($language)) {
+            $validLanguages = Pimcore_Tool::getValidLanguages();
+            $language = $validLanguages[0];
+        }
+
+
         if(!empty($gridConfig) && !empty($gridConfig['language'])) {
             $language = $gridConfig['language'];
         }
@@ -363,7 +370,11 @@ class Admin_ObjectHelperController extends Pimcore_Controller_Action_Admin {
 
         $this->_helper->json(array(
             "success" => true
-        ));
+        ), false);
+
+        // set content-type to text/html, otherwise (when application/json is sent) chrome will complain in
+        // Ext.form.Action.Submit and mark the submission as failed
+        $this->getResponse()->setHeader("Content-Type", "text/html");
     }
 
     public function importGetFileInfoAction()
@@ -781,6 +792,7 @@ class Admin_ObjectHelperController extends Pimcore_Controller_Action_Admin {
                 try {
                     // don't check for mandatory fields here
                     $object->setOmitMandatoryCheck(true);
+                    $object->setUserModification($this->getUser()->getId());
                     $object->save();
                     $success = true;
                 } catch (Exception $e) {

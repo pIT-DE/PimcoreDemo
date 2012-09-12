@@ -59,8 +59,8 @@ DROP TABLE IF EXISTS `cache_tags`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cache_tags` (
-  `id` varchar(80) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
-  `tag` varchar(80) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `id` varchar(165) NOT NULL DEFAULT '',
+  `tag` varchar(165) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`,`tag`),
   KEY `id` (`id`),
   KEY `tag` (`tag`)
@@ -346,6 +346,7 @@ CREATE TABLE `documents_page` (
   `description` varchar(255) DEFAULT NULL,
   `keywords` varchar(255) DEFAULT NULL,
   `prettyUrl` varchar(255) DEFAULT NULL,
+  `contentMasterDocumentId` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `prettyUrl` (`prettyUrl`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -357,7 +358,7 @@ CREATE TABLE `documents_page` (
 
 LOCK TABLES `documents_page` WRITE;
 /*!40000 ALTER TABLE `documents_page` DISABLE KEYS */;
-INSERT INTO `documents_page` VALUES (1,'','content','portal','','','','','',''),(195,'','content','documentlist','',NULL,'The Idea','','',''),(196,'','content','soon','',NULL,'Beginner','','',''),(199,'','content','soon','',NULL,'Worker','','',''),(200,'','content','soon','',NULL,'Advanced','','',''),(201,'','content','soon','',NULL,'Expert','','',''),(202,'','content','soon','',NULL,'About','','',''),(203,'','content','soon','',NULL,'The Idea','','',''),(204,'','content','soon','',NULL,'How to use','','',''),(205,'','content','soon','',NULL,'Requirements','','',''),(206,'','content','documentlist','',NULL,'Dokument - Tags','','',''),(207,'','content','default','/content/starter/wysiwyg.php',NULL,'WYSIWYG','','',''),(208,'','content','default','/content/starter/image.php',NULL,'Image ','','',''),(209,'','content','soon','',NULL,'Plugins','','',NULL),(210,'','content','soon','',NULL,'Forms / EMail','','',''),(212,'','content','soon','',NULL,'','','',''),(214,'','content','soon','',NULL,'','','',''),(216,'','content','soon','',NULL,'','','',''),(217,'','object','list','',NULL,'','','',''),(218,'','content','soon','',NULL,'','','',''),(219,'','content','default','/content/starter/video.php',NULL,'','','',''),(220,'','content','default','/content/starter/checkbox.php',NULL,'','','',''),(221,'','content','default','/content/starter/multihref.php',NULL,'','','',''),(222,'','content','starter','',NULL,'','','',''),(223,'','content','soon','',NULL,'','','',NULL),(224,'','content','soon','',NULL,'','','',NULL),(225,'','content','soon','',NULL,'','','',NULL),(226,'','content','soon','',NULL,'','','',NULL),(227,'','content','soon','',NULL,'','','',NULL),(228,'','content','default','/content/starter/table.php',NULL,'','','','');
+INSERT INTO `documents_page` VALUES (1,'','content','portal','','','','','','',NULL),(195,'','content','documentlist','',NULL,'The Idea','','','',NULL),(196,'','content','soon','',NULL,'Beginner','','','',NULL),(199,'','content','soon','',NULL,'Worker','','','',NULL),(200,'','content','soon','',NULL,'Advanced','','','',NULL),(201,'','content','soon','',NULL,'Expert','','','',NULL),(202,'','content','soon','',NULL,'About','','','',NULL),(203,'','content','soon','',NULL,'The Idea','','','',NULL),(204,'','content','soon','',NULL,'How to use','','','',NULL),(205,'','content','soon','',NULL,'Requirements','','','',NULL),(206,'','content','documentlist','',NULL,'Dokument - Tags','','','',NULL),(207,'','content','default','/content/starter/wysiwyg.php',NULL,'WYSIWYG','','','',NULL),(208,'','content','default','/content/starter/image.php',NULL,'Image ','','','',NULL),(209,'','content','soon','',NULL,'Plugins','','',NULL,NULL),(210,'','content','soon','',NULL,'Forms / EMail','','','',NULL),(212,'','content','soon','',NULL,'','','','',NULL),(214,'','content','soon','',NULL,'','','','',NULL),(216,'','content','soon','',NULL,'','','','',NULL),(217,'','object','list','',NULL,'','','','',NULL),(218,'','content','soon','',NULL,'','','','',NULL),(219,'','content','default','/content/starter/video.php',NULL,'','','','',NULL),(220,'','content','default','/content/starter/checkbox.php',NULL,'','','','',NULL),(221,'','content','default','/content/starter/multihref.php',NULL,'','','','',NULL),(222,'','content','starter','',NULL,'','','','',NULL),(223,'','content','soon','',NULL,'','','',NULL,NULL),(224,'','content','soon','',NULL,'','','',NULL,NULL),(225,'','content','soon','',NULL,'','','',NULL,NULL),(226,'','content','soon','',NULL,'','','',NULL,NULL),(227,'','content','soon','',NULL,'','','',NULL,NULL),(228,'','content','default','/content/starter/table.php',NULL,'','','','',NULL);
 /*!40000 ALTER TABLE `documents_page` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -374,6 +375,7 @@ CREATE TABLE `documents_snippet` (
   `controller` varchar(255) DEFAULT NULL,
   `action` varchar(255) DEFAULT NULL,
   `template` varchar(255) DEFAULT NULL,
+  `contentMasterDocumentId` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -458,7 +460,7 @@ DROP TABLE IF EXISTS `glossary`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `glossary` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `language` varchar(2) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `language` varchar(10) DEFAULT NULL,
   `casesensitive` tinyint(1) DEFAULT NULL,
   `exactmatch` tinyint(1) DEFAULT NULL,
   `text` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
@@ -501,7 +503,7 @@ CREATE TABLE `http_error_log` (
   KEY `path` (`path`(255)),
   KEY `code` (`code`),
   KEY `date` (`date`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -644,7 +646,7 @@ SET character_set_client = utf8;
   `o_classId` int(11) unsigned,
   `o_className` varchar(255),
   `ooo_id` int(11),
-  `language` varchar(5),
+  `language` varchar(10),
   `active` tinyint(1),
   `name` varchar(255),
   `teaser` longtext,
@@ -730,7 +732,7 @@ SET character_set_client = utf8;
   `o_classId` int(11) unsigned,
   `o_className` varchar(255),
   `ooo_id` int(11),
-  `language` varchar(5),
+  `language` varchar(10),
   `active` tinyint(1),
   `name` varchar(255),
   `teaser` longtext,
@@ -747,7 +749,7 @@ DROP TABLE IF EXISTS `object_localized_data_1`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `object_localized_data_1` (
   `ooo_id` int(11) NOT NULL DEFAULT '0',
-  `language` varchar(5) NOT NULL DEFAULT '',
+  `language` varchar(10) NOT NULL DEFAULT '',
   `active` tinyint(1) DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `teaser` longtext,
@@ -1020,7 +1022,10 @@ DROP TABLE IF EXISTS `redirects`;
 CREATE TABLE `redirects` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `source` varchar(255) DEFAULT NULL,
+  `sourceEntireUrl` tinyint(1) DEFAULT NULL,
+  `sourceSite` int(11) DEFAULT NULL,
   `target` varchar(255) DEFAULT NULL,
+  `targetSite` int(11) DEFAULT NULL,
   `statusCode` varchar(3) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `priority` int(2) DEFAULT '0',
   `expiry` bigint(20) DEFAULT NULL,
@@ -1293,7 +1298,7 @@ CREATE TABLE `users` (
   `firstname` varchar(255) DEFAULT NULL,
   `lastname` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
-  `language` varchar(2) DEFAULT NULL,
+  `language` varchar(10) DEFAULT NULL,
   `admin` tinyint(1) unsigned DEFAULT '0',
   `active` tinyint(1) unsigned DEFAULT '1',
   `permissions` varchar(1000) DEFAULT NULL,
@@ -1567,4 +1572,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-07-04 18:53:13
+-- Dump completed on 2012-09-12 13:09:25

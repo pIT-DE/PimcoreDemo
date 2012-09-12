@@ -44,7 +44,6 @@ class Pimcore {
         self::outputBufferStart();
         //}
 
-        self::initAutoloader();
         self::initConfiguration();
         self::setupFramework();
 
@@ -54,6 +53,7 @@ class Pimcore {
         // set locale data cache, this must be after self::initLogger() since Pimcore_Model_Cache requires the logger
         // to log if there's something wrong with the cache configuration in cache.xml
         Zend_Locale_Data::setCache(Pimcore_Model_Cache::getInstance());
+        Zend_Locale::setCache(Pimcore_Model_Cache::getInstance());
 
         // load plugins and modules (=core plugins)
         self::initModules();
@@ -88,6 +88,7 @@ class Pimcore {
             $front->registerPlugin(new Pimcore_Controller_Plugin_JavascriptMinify(), 801);
             $front->registerPlugin(new Pimcore_Controller_Plugin_ImageDataUri(), 803);
             $front->registerPlugin(new Pimcore_Controller_Plugin_TagManagement(), 804);
+            $front->registerPlugin(new Pimcore_Controller_Plugin_Targeting(), 805);
             $front->registerPlugin(new Pimcore_Controller_Plugin_HttpErrorLog(), 850);
             $front->registerPlugin(new Pimcore_Controller_Plugin_Cache(), 901); // for caching
         }
@@ -373,6 +374,10 @@ class Pimcore {
         // try to set system-internal variables
 
         $maxExecutionTime = 240;
+        if(php_sapi_name() == "cli") {
+            $maxExecutionTime = 0;
+        }
+
         error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
         @ini_set("memory_limit", "1024M");
         @ini_set("max_execution_time", $maxExecutionTime);
@@ -411,8 +416,6 @@ class Pimcore {
     public static function initPlugins() {
         // add plugin include paths
 
-        $autoloader = Zend_Loader_Autoloader::getInstance();
-
         try {
 
             $pluginConfigs = Pimcore_ExtensionManager::getPluginConfigs();
@@ -437,14 +440,6 @@ class Pimcore {
                         }
                         else if ($p['plugin']['pluginIncludePaths']['path'] != null) {
                             $includePaths[] = PIMCORE_PLUGINS_PATH . $p['plugin']['pluginIncludePaths']['path'];
-                        }
-                        if (is_array($p['plugin']['pluginNamespaces']['namespace'])) {
-                            foreach ($p['plugin']['pluginNamespaces']['namespace'] as $namespace) {
-                                $autoloader->registerNamespace($namespace);
-                            }
-                        }
-                        else if ($p['plugin']['pluginNamespaces']['namespace'] != null) {
-                            $autoloader->registerNamespace($p['plugin']['pluginNamespaces']['namespace']);
                         }
                     }
 
@@ -520,50 +515,11 @@ class Pimcore {
     }
 
     /**
+     * @deprecated
      * @static
-     *
      */
     public static function initAutoloader() {
 
-        $autoloader = Zend_Loader_Autoloader::getInstance();
-
-        $autoloader->registerNamespace('Logger');
-        $autoloader->registerNamespace('Pimcore');
-        $autoloader->registerNamespace('Document');
-        $autoloader->registerNamespace('Object');
-        $autoloader->registerNamespace('Asset');
-        $autoloader->registerNamespace('User');
-        $autoloader->registerNamespace('Property');
-        $autoloader->registerNamespace('Version');
-        $autoloader->registerNamespace('Sabre_');
-        $autoloader->registerNamespace('Site');
-        $autoloader->registerNamespace('Services_');
-        $autoloader->registerNamespace('HTTP_');
-        $autoloader->registerNamespace('Net_');
-        $autoloader->registerNamespace('MIME_');
-        $autoloader->registerNamespace('File_');
-        $autoloader->registerNamespace('System_');
-        $autoloader->registerNamespace('PEAR_');
-        $autoloader->registerNamespace('Thumbnail');
-        $autoloader->registerNamespace('Staticroute');
-        $autoloader->registerNamespace('Redirect');
-        $autoloader->registerNamespace('Dependency');
-        $autoloader->registerNamespace('Schedule');
-        $autoloader->registerNamespace('Translation');
-        $autoloader->registerNamespace('Glossary');
-        $autoloader->registerNamespace('Website');
-        $autoloader->registerNamespace('Element');
-        $autoloader->registerNamespace('API');
-        $autoloader->registerNamespace('Minify');
-        $autoloader->registerNamespace('Archive');
-        $autoloader->registerNamespace('JSMin');
-        $autoloader->registerNamespace('JSMinPlus');
-        $autoloader->registerNamespace('Csv');
-        $autoloader->registerNamespace('Webservice');
-        $autoloader->registerNamespace('Search');
-        $autoloader->registerNamespace('Tool');
-
-        Pimcore_Tool::registerClassModelMappingNamespaces();
     }
 
     /**
@@ -705,6 +661,7 @@ class Pimcore {
 
         $protectedItems = array(
             "Zend_Locale",
+            "Pimcore_Language",
             "Zend_View_Helper_Placeholder_Registry",
             "Zend_View_Helper_Doctype",
             "Zend_Translate",
@@ -773,10 +730,8 @@ class Pimcore {
     public static function outputBufferEnd ($data) {
 
         $contentEncoding = null;
-        if( strpos($_SERVER["HTTP_ACCEPT_ENCODING"], 'x-gzip') !== false ) {
-            $contentEncoding = 'x-gzip';
-        } else if( strpos($_SERVER["HTTP_ACCEPT_ENCODING"],'gzip') !== false ) {
-            $contentEncoding = 'gzip';
+        if( preg_match('@(?:^|,)\\s*((?:x-)?gzip)\\s*(?:$|,|;\\s*q=(?:0\\.|1))@' ,$_SERVER["HTTP_ACCEPT_ENCODING"] ,$m) ) {
+            $contentEncoding = $m[1];
         }
 
         // only send this headers in the shutdown-function, so that it is also possible to get the contents of this buffer earlier without sending headers

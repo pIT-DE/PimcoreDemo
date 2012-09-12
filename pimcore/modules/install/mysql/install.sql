@@ -20,8 +20,8 @@ CREATE TABLE `assets` (
 
 DROP TABLE IF EXISTS `cache_tags`;
 CREATE TABLE `cache_tags` (
-  `id` varchar(255) NOT NULL DEFAULT '',
-  `tag` varchar(255) NULL DEFAULT NULL,
+  `id` varchar(165) NOT NULL DEFAULT '',
+  `tag` varchar(165) NULL DEFAULT NULL,
   PRIMARY KEY (`id`,`tag`),
   INDEX `id` (`id`),
   INDEX `tag` (`tag`)
@@ -149,6 +149,7 @@ CREATE TABLE `documents_page` (
   `description` varchar(255) DEFAULT NULL,
   `keywords` varchar(255) DEFAULT NULL,
   `prettyUrl` varchar(255) DEFAULT NULL,
+  `contentMasterDocumentId` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `prettyUrl` (`prettyUrl`)
 ) DEFAULT CHARSET=utf8;
@@ -160,6 +161,7 @@ CREATE TABLE `documents_snippet` (
   `controller` varchar(255) DEFAULT NULL,
   `action` varchar(255) DEFAULT NULL,
   `template` varchar(255) DEFAULT NULL,
+  `contentMasterDocumentId` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) DEFAULT CHARSET=utf8;
 
@@ -195,7 +197,7 @@ CREATE TABLE `email_log` (
 DROP TABLE IF EXISTS `glossary`;
 CREATE TABLE `glossary` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `language` varchar(2) DEFAULT NULL,
+  `language` varchar(10) DEFAULT NULL,
   `casesensitive` tinyint(1) DEFAULT NULL,
   `exactmatch` tinyint(1) DEFAULT NULL,
   `text` varchar(255) DEFAULT NULL,
@@ -324,7 +326,10 @@ DROP TABLE IF EXISTS `redirects`;
 CREATE TABLE `redirects` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `source` varchar(255) DEFAULT NULL,
+  `sourceEntireUrl` tinyint(1) DEFAULT NULL,
+  `sourceSite` int(11) DEFAULT NULL,
   `target` varchar(255) DEFAULT NULL,
+  `targetSite` int(11) DEFAULT NULL,
   `statusCode` varchar(3) DEFAULT NULL,
   `priority` int(2) DEFAULT '0',
   `expiry` bigint(20) DEFAULT NULL,
@@ -449,7 +454,7 @@ CREATE TABLE `users` (
   `firstname` varchar(255) DEFAULT NULL,
   `lastname` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
-  `language` varchar(2) DEFAULT NULL,
+  `language` varchar(10) DEFAULT NULL,
   `admin` tinyint(1) unsigned DEFAULT '0',
   `active` tinyint(1) unsigned DEFAULT '1',
   `permissions` varchar(1000) DEFAULT NULL,

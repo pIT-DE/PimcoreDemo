@@ -402,6 +402,12 @@ pimcore.settings.system = Class.create({
                                 cls: "pimcore_extra_label_bottom"
                             },
                             {
+                                fieldLabel: t("debug_admin_translations"),
+                                xtype: "checkbox",
+                                name: "general.debug_admin_translations",
+                                checked: this.getValue("general.debug_admin_translations")
+                            },
+                            {
                                 fieldLabel: 'DEV-Mode (<span style="color:red;font-weight:bold;">DON`T ACTIVATE IT!</span>)',
                                 xtype: "checkbox",
                                 name: "general.devmode",
@@ -570,6 +576,12 @@ pimcore.settings.system = Class.create({
                                 fieldLabel: t("domain"),
                                 name: "general.domain",
                                 value: this.getValue("general.domain")
+                            },
+                            {
+                                xtype: "checkbox",
+                                fieldLabel: t("enable_targeting"),
+                                name: "general.targeting",
+                                checked: this.getValue("general.targeting")
                             },
                             {
                                 xtype:'fieldset',
@@ -872,9 +884,15 @@ pimcore.settings.system = Class.create({
                                 cls: "pimcore_extra_label"
                             },
                             {
-                                fieldLabel: t('api_key'),
+                                fieldLabel: t('server_api_key'),
                                 name: 'services.google.simpleapikey',
                                 value: this.getValue("services.google.simpleapikey"),
+                                width: 650
+                            },
+                            {
+                                fieldLabel: t('browser_api_key'),
+                                name: 'services.google.browserapikey',
+                                value: this.getValue("services.google.browserapikey"),
                                 width: 650
                             },{
                                 xtype: "displayfield",

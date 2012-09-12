@@ -99,14 +99,32 @@ pimcore.helpers.closeObject = function (id) {
 
 
 pimcore.helpers.openElement = function (id, type, subtype) {
-    if (type == "document") {
-        pimcore.helpers.openDocument(id, subtype);
-    }
-    else if (type == "asset") {
-        pimcore.helpers.openAsset(id, subtype);
-    }
-    else if (type == "object") {
-        pimcore.helpers.openObject(id, subtype);
+    if(typeof subtype != "undefined") {
+        if (type == "document") {
+            pimcore.helpers.openDocument(id, subtype);
+        }
+        else if (type == "asset") {
+            pimcore.helpers.openAsset(id, subtype);
+        }
+        else if (type == "object") {
+            pimcore.helpers.openObject(id, subtype);
+        }
+    } else {
+        Ext.Ajax.request({
+            url: "/admin/element/get-subtype",
+            params: {
+                id: id,
+                type:  type
+            },
+            success: function (response) {
+                var res = Ext.decode(response.responseText);
+                if(res.success) {
+                    pimcore.helpers.openElement(res.id, res.type, res.subtype);
+                } else {
+                    Ext.MessageBox.alert(t("error"), t("element_not_found"))
+                }
+            }
+        });
     }
 };
 
@@ -316,7 +334,9 @@ pimcore.helpers.lockManager = function (cid, ctype, csubtype, data) {
     var lockDetails = "<br /><br />";
     lockDetails += "<b>" + t("path") + ": <i>" + data.editlock.cpath + "</i></b><br />";
     lockDetails += "<b>" + t("type") + ": </b>" + t(ctype) + "<br />";
-    lockDetails += "<b>" + t("user") + ":</b> " + data.editlock.user.name + "<br />";
+    if(data.editlock.user) {
+        lockDetails += "<b>" + t("user") + ":</b> " + data.editlock.user.name + "<br />";
+    }
     lockDetails += "<b>" + t("since") + ": </b>" + Ext.util.Format.date(lockDate);
     lockDetails += "<br /><br />" + t("element_lock_question");
 
@@ -913,6 +933,69 @@ pimcore.helpers.assetSingleUploadDialog = function (parent, parentType, success,
     uploadWindowCompatible.doLayout();
 };
 
+pimcore.helpers.uploadDialog = function (url, filename, success, failure) {
+
+    if(typeof success != "function") {
+        var success = function () {};
+    }
+
+    if(typeof failure != "function") {
+        var failure = function () {};
+    }
+
+    if(typeof filename != "function") {
+        var filename = "file";
+    }
+
+    var uploadWindowCompatible = new Ext.Window({
+        autoHeight: true,
+        title: t('upload'),
+        closeAction: 'close',
+        width:400,
+        modal: true
+    });
+
+    var uploadForm = new Ext.form.FormPanel({
+        layout: "pimcoreform",
+        fileUpload: true,
+        width: 400,
+        bodyStyle: 'padding: 10px;',
+        items: [{
+            xtype: 'fileuploadfield',
+            emptyText: t("select_a_file"),
+            fieldLabel: t("file"),
+            width: 230,
+            name: 'Filedata',
+            buttonText: "",
+            buttonCfg: {
+                iconCls: 'pimcore_icon_upload_single'
+            },
+            listeners: {
+                fileselected: function () {
+                    uploadForm.getForm().submit({
+                        url: url,
+                        waitMsg: t("please_wait"),
+                        success: function (el, res) {
+                            // content-type in response has to be text/html, otherwise (when application/json is sent) chrome will complain in
+                            // Ext.form.Action.Submit and mark the submission as failed
+                            success(res);
+                            uploadWindowCompatible.close();
+                        },
+                        failure: function (el, res) {
+                            failure(res);
+                            uploadWindowCompatible.close();
+                        }
+                    });
+                }
+            }
+        }]
+    });
+
+    uploadWindowCompatible.add(uploadForm);
+    uploadWindowCompatible.show();
+    uploadWindowCompatible.setWidth(401);
+    uploadWindowCompatible.doLayout();
+};
 
 pimcore.helpers.selectPathInTreeActiveSelections = {};
 pimcore.helpers.selectPathInTree = function (tree, path, callback) {
@@ -949,4 +1032,51 @@ pimcore.helpers.selectPathInTree = function (tree, path, callback) {
         delete pimcore.helpers.selectPathInTreeActiveSelections[hash];
         console.log(e);
     }
+}
+
+pimcore.helpers.getClassForIcon = function (icon) {
+
+    var styleContainerId = "pimcore_dynamic_class_for_icon";
+    var styleContainer = Ext.get(styleContainerId);
+    if(!styleContainer) {
+        styleContainer = Ext.getBody().insertHtml("beforeEnd", '<style type="text/css" id="' + styleContainerId + '"></style>', true);
+    }
+
+    var content = styleContainer.dom.innerHTML;
+    var classname = "pimcore_dynamic_class_for_icon_" + uniqid();
+    content += ("." + classname + " { background: url(" + icon + ") left center no-repeat !important; }\n");
+    styleContainer.dom.innerHTML = content;
+
+    return classname;
+}
+
+
+pimcore.helpers.openElementByIdDialog = function (type) {
+    Ext.MessageBox.prompt(t('open_' + type + '_by_id'), t('please_enter_the_id_of_the_' + type), function (button, value, object) {
+        if(button == "ok") {
+            pimcore.helpers.openElement(value, type);
+        }
+    });
+}
+
+pimcore.helpers.openDocumentByPathDialog = function () {
+    Ext.MessageBox.prompt(t("open_document_by_url"), t("path_or_url_incl_http"), function (button, value, object) {
+        if (button == "ok") {
+            Ext.Ajax.request({
+                url: "/admin/document/open-by-url/",
+                method: "get",
+                params: {
+                    url: value
+                },
+                success: function (response) {
+                    var res = Ext.decode(response.responseText);
+                    if(res.success) {
+                        pimcore.helpers.openDocument(res.id, res.type);
+                    } else {
+                        Ext.MessageBox.alert(t("error"), t("no_matching_document_found_for") + ": " + value);
+                    }
+                }.bind(this)
+            });
+        }
+    });
 }
