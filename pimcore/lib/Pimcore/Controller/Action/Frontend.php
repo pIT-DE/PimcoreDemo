@@ -44,7 +44,7 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
         $this->view->config = $config;
         
         
-        if (!$this->_getParam("document")) {
+        if (!$this->getParam("document")) {
             Zend_Registry::set("pimcore_editmode", false);
             $this->editmode = false;
             $this->view->editmode = false;
@@ -53,11 +53,11 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
             return;
         }
         else {
-            $this->setDocument($this->_getParam("document"));
+            $this->setDocument($this->getParam("document"));
         }
 
 
-        if ($this->_getParam("pimcore_editmode") || $this->_getParam("pimcore_version") || $this->_getParam("pimcore_preview") || $this->_getParam("pimcore_admin") || $this->_getParam("pimcore_object_preview") ) {
+        if ($this->getParam("pimcore_editmode") || $this->getParam("pimcore_version") || $this->getParam("pimcore_preview") || $this->getParam("pimcore_admin") || $this->getParam("pimcore_object_preview") ) {
             $specialAdminRequest = true;
             $this->disableBrowserCache();
 
@@ -79,16 +79,15 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
 
         // register global locale if the document has the system property "language"
         if($this->document->getProperty("language")) {
-            $language = $this->document->getProperty("language");
-            $locale = new Zend_Locale($language);
+            $locale = new Zend_Locale($this->document->getProperty("language"));
 		    Zend_Registry::set('Zend_Locale', $locale);
-            Zend_Registry::set("Pimcore_Language", $language);
-            $this->getResponse()->setHeader("Content-Language",strtolower(str_replace("_","-", $language)), true);
+            $this->getResponse()->setHeader("Content-Language",strtolower(str_replace("_","-", (string) $locale)), true);
         }
+
 
         // for editmode
         if ($user) {
-            if ($this->_getParam("pimcore_editmode") and !Zend_Registry::isRegistered("pimcore_editmode")) {
+            if ($this->getParam("pimcore_editmode") and !Zend_Registry::isRegistered("pimcore_editmode")) {
                 Zend_Registry::set("pimcore_editmode", true);
                 
                 // check if there is the document in the session
@@ -124,9 +123,9 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
         // for preview
         if ($user) {
             // document preview
-            if ($this->_getParam("pimcore_preview")) {
+            if ($this->getParam("pimcore_preview")) {
                 // get document from session
-                $docKey = "document_" . $this->_getParam("document")->getId();
+                $docKey = "document_" . $this->getParam("document")->getId();
                 $docSession = new Zend_Session_Namespace("pimcore_documents");
 
                 if ($docSession->$docKey) {
@@ -135,8 +134,8 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
             }
 
             // object preview
-            if ($this->_getParam("pimcore_object_preview")) {
-                $key = "object_" . $this->_getParam("pimcore_object_preview");
+            if ($this->getParam("pimcore_object_preview")) {
+                $key = "object_" . $this->getParam("pimcore_object_preview");
                 $session = new Zend_Session_Namespace("pimcore_objects");
                 if($session->$key) {
                     $object = $session->$key;
@@ -147,12 +146,12 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
         }
 
         // for version preview
-        if ($this->_getParam("pimcore_version")) {
+        if ($this->getParam("pimcore_version")) {
             if ($user) {
 
                 // only get version data at the first call || because of embedded Snippets ...
                 if(!Zend_Registry::isRegistered("pimcore_version_active")) {
-                    $version = Version::getById($this->_getParam("pimcore_version"));
+                    $version = Version::getById($this->getParam("pimcore_version"));
                     $this->setDocument($version->getData());
 
                     Zend_Registry::set("pimcore_version_active", true);
@@ -161,9 +160,9 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
         }
 
         // for public versions
-        if ($this->_getParam("v")) {
+        if ($this->getParam("v")) {
             try {
-                $version = Version::getById($this->_getParam("v"));
+                $version = Version::getById($this->getParam("v"));
                 if ($version->getPublic()) {
                     $this->setDocument($version->getData());
                 }
@@ -207,21 +206,16 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
         } else {
             // setup Zend_Translate
             try {
-                if(Zend_Registry::isRegistered("Pimcore_Language")) {
-                    $language = Zend_Registry::get("Pimcore_Language");
-                } else {
-                    $language = (string) Zend_Registry::get("Zend_Locale");
-                }
-
+                $locale = Zend_Registry::get("Zend_Locale");
                 $cacheKey = "translator_website";
 
                 if (!$translate = Pimcore_Model_Cache::load($cacheKey)) {
-                    $translate = new Pimcore_Translate_Website($language);
+                    $translate = new Pimcore_Translate_Website($locale);
                     Pimcore_Model_Cache::save($translate, $cacheKey, array("translator","translator_website","translate"), null, 999);
                 }
 
-                if(Pimcore_Tool::isValidLanguage($language)) {
-                    $translate->setLocale($language);
+                if(Pimcore_Tool::isValidLanguage($locale)) {
+                    $translate->setLocale($locale);    
                 } else {
                     Logger::error("You want to use an invalid language which is not defined in the system settings: " . $locale);
                     // fall back to the first (default) language defined
@@ -250,14 +244,14 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
     public function getRenderScript() {
 
         // try to get the template out of the params
-        if ($this->_getParam("template")) {
-            return $this->_getParam("template");
+        if ($this->getParam("template")) {
+            return $this->getParam("template");
         }
 
         // try to get template out of the document object, but only if the parameter `staticroute´ is not set, which indicates
         // if a request comes through a static/custom route (contains the route Object => Staticroute)
         // see PIMCORE-1545
-        if ($this->document instanceof Document && !in_array($this->_getParam("pimcore_request_source"), array("staticroute", "renderlet"))) {
+        if ($this->document instanceof Document && !in_array($this->getParam("pimcore_request_source"), array("staticroute", "renderlet"))) {
             if(method_exists($this->document, "getTemplate") && $this->document->getTemplate()) {
                 return $this->document->getTemplate();
             }
@@ -298,7 +292,7 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
 
         // this is for $this->action() in templates when they are inside a block element
         try {
-            if (!$this->_getParam("disableBlockClearing")) {
+            if (!$this->getParam("disableBlockClearing")) {
                 $this->parentBlockCurrent = Zend_Registry::get("pimcore_tag_block_current");
                 $this->parentBlockNumeration = Zend_Registry::get("pimcore_tag_block_numeration");
 
@@ -314,7 +308,7 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
     public function postDispatch() {
         parent::postDispatch();
 
-        if ($this->parentBlockCurrent && !$this->_getParam("disableBlockClearing")) {
+        if ($this->parentBlockCurrent && !$this->getParam("disableBlockClearing")) {
             $this->forceRender();
 
             Zend_Registry::set("pimcore_tag_block_current", $this->parentBlockCurrent);
@@ -323,7 +317,7 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
     }
 
     public function checkForErrors() {
-        if ($error = $this->_getParam('error_handler')) {
+        if ($error = $this->getParam('error_handler')) {
             if ($error->exception) {
 
                 if ($error->exception instanceof Zend_Controller_Router_Exception || $error->exception instanceof Zend_Controller_Action_Exception) {
@@ -343,7 +337,7 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
                 try {
                     $document = Zend_Registry::get("pimcore_error_document");
                     $this->setDocument($document);
-                    $this->_setParam("document", $document);
+                    $this->setParam("document", $document);
                     $this->disableLayout();
                 }
                 catch (Exception $e) {
