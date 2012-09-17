@@ -7,3 +7,8 @@ website/**/var/log/*.log
 website/**/var/resyclebin/*
 website/**/var/system/*
 website/**/var/tmp/*
+/README.txt
+/plugins_example
+/website_example
+/update
+/tests
