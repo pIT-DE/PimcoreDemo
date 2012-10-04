@@ -15,11 +15,11 @@ $language = Zend_Registry::get("Zend_Locale")->getLanguage();
 
 ?>
 <!DOCTYPE html>
-<html lang="<?=$language;?>" >
+<head lang="<?=$language;?>" >
 <?php
 $this->template("includes/head.php");
 ?>
-</html>
+</head>
 <?php
 
 $class = "content";
@@ -52,7 +52,7 @@ if ($this->portal) {
                 <?php
                 echo $this->layout()->content;
 
-                if ($this->document instanceof Document_Page and $this->document->getProperty("codeview")) {
+                if (!$this->editmode and $this->document instanceof Document_Page and $this->document->getProperty("codeview")) {
 
                     $this->template("tools/codeview.php", array(
                         "codeview" => $this->document

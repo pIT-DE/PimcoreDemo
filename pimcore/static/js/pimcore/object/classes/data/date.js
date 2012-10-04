@@ -15,18 +15,18 @@
 pimcore.registerNS("pimcore.object.classes.data.date");
 pimcore.object.classes.data.date = Class.create(pimcore.object.classes.data.data, {
 
-    type: "date",
+    type:"date",
     /**
      * define where this datatype is allowed
      */
-    allowIn: {
-        object: true,
-        objectbrick: true,
-        fieldcollection: true,
-        localizedfield: true
+    allowIn:{
+        object:true,
+        objectbrick:true,
+        fieldcollection:true,
+        localizedfield:true
     },
 
-    initialize: function (treeNode, initData) {
+    initialize:function (treeNode, initData) {
         this.type = "date";
 
         this.initData(initData);
@@ -34,19 +34,19 @@ pimcore.object.classes.data.date = Class.create(pimcore.object.classes.data.data
         this.treeNode = treeNode;
     },
 
-    getTypeName: function () {
+    getTypeName:function () {
         return t("date");
     },
 
-    getGroup: function () {
+    getGroup:function () {
         return "date";
     },
 
-    getIconClass: function () {
+    getIconClass:function () {
         return "pimcore_icon_date";
     },
 
-    getLayout: function ($super) {
+    getLayout:function ($super) {
 
         $super();
         return this.layout;

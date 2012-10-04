@@ -43,7 +43,7 @@ $this->headLink()->prependStylesheet(
     )
 );
 
-if ($this->_getParam("pimcore"))     {
+if ($this->_getParam("pimcore")) {
 
 
     $this->headLink()->appendStylesheet(
@@ -143,4 +143,19 @@ if (!Pimcore_Google_Analytics::isConfigured() and !Pimcore_Google_Analytics::get
 </script>
 <?php
 }
+?>
+<script type="text/javascript">
+    var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.flamann.at/" : "http://piwik.flamann.at/");
+    document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 6);
+        piwikTracker.trackPageView();
+        piwikTracker.enableLinkTracking();
+    } catch (err) {
+    }
+</script>
+<noscript><p><img src="http://piwik.flamann.at/piwik.php?idsite=6" style="border:0" alt=""/></p></noscript>
+
 

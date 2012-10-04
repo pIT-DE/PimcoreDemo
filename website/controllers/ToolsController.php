@@ -11,7 +11,7 @@ class ToolsController extends Website_Controller_Action
 
         // cleanup old backups
         if (is_file(PIMCORE_DOCUMENT_ROOT . "/data/data.sql")) {
-          //  unlink(PIMCORE_DOCUMENT_ROOT . "/data/data.sql");
+            unlink(PIMCORE_DOCUMENT_ROOT . "/data/data.sql");
         }
 
         $user = Zend_Registry::get("pimcore_config_system")->database->params->username;

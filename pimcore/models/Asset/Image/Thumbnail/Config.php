@@ -54,7 +54,6 @@ class Asset_Image_Thumbnail_Config {
      */
     public $quality = 90;
 
-
     /**
      * @static
      * @param  $name

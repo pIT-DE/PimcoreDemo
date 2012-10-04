@@ -42,6 +42,10 @@ $this->placeholder("headline")->set("Coming Soon");
         The Pimcore demo project is a recreational project. I do this in terms of open source. For comments and
         suggestions please look in the forum
     </p>
+    <h2>Have Fun</h2>
+    <p>
+        Nikolaus :-)
+    </p>
 
 </div>
 
