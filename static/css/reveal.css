@@ -1,0 +1,66 @@
+/**
+* Editmode
+*/
+
+html.ext-strict body {
+    height: auto;
+    overflow: scroll;
+    color: #232323;
+    font-family: Times, 'Times New Roman', serif;
+    font-size: inherit;
+    font-weight: normal;
+    letter-spacing: normal;
+
+}
+
+html.ext-strict .pimcore_editable {
+    background: #ccc;
+}
+
+html.ext-strict section.vertical {
+    background-color: #046BCA;
+    padding: 10px;
+}
+
+html.ext-strict .reveal section img {
+    margin-top: 0;
+}
+
+html.ext-strict .reveal pre,
+html.ext-strict .reveal pre code{
+    background: #fff;
+    color: #000;
+}
+
+body {
+    background: url(/static/img/training/background.jpg) center center no-repeat #17212b;
+}
+
+
+/**
+ * Frontend Modifications
+ */
+.reveal .slides > section.present p.left {
+    text-align: left;
+}
+
+.reveal .slides .textblock.left p {
+    text-align: left;
+}
+
+.reveal .slides pre {
+    line-height: 14px;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.reveal .slides code {
+    padding: 1%;
+    width: 98%;
+    margin: 0 auto;
+    position: absolute;
+    top: 0;
+
+
+}
