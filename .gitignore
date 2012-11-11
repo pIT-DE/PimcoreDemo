@@ -12,3 +12,4 @@ website/**/var/tmp/*
 /website_example
 /update
 /tests
+/.svn
