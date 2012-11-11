@@ -48,7 +48,60 @@ pimcore.object.classes.data.date = Class.create(pimcore.object.classes.data.data
 
     getLayout:function ($super) {
 
+
         $super();
+
+        var date = {
+            fieldLabel:t("default_value"),
+            name:"defaultValue",
+            itemCls:"object_field",
+            width:100,
+            disabled: this.datax.useCurrentDate
+        };
+
+        if (this.datax.defaultValue) {
+
+            if(typeof this.datax.defaultValue === 'object'){
+                var tmpDate = this.datax.defaultValue;
+            } else {
+                var tmpDate = new Date(this.datax.defaultValue * 1000);
+            }
+
+            date.value = tmpDate;
+        }
+
+        this.component = new Ext.form.DateField(date);
+
+
+        this.specificPanel.removeAll();
+        this.specificPanel.add([
+            this.component,
+            {
+                xtype:"checkbox",
+                fieldLabel:t("use_current_date"),
+                name:"useCurrentDate",
+                value:this.datax.defaultValue,
+                checked: this.datax.useCurrentDate,
+                listeners:{
+                    check:this.toggleDefaultDate.bind(this)
+                }
+            },
+            new Ext.form.DisplayField({hideLabel:true,html:'<span class="object_field_setting_warning">'+t('default_value_warning')+'</span>'})
+
+        ]);
+
         return this.layout;
+    },
+
+    toggleDefaultDate:function (checkbox, checked) {
+        if (checked) {
+            this.component.setValue(null);
+            this.component.setDisabled(true);
+        } else {
+            this.component.enable()
+        }
+
+
     }
+
 });

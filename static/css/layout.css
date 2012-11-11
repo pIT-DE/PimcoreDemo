@@ -23,6 +23,16 @@ body {
 /**
 * Standard Styles
 */
+h1 {
+    padding: 0;
+    font-family: "Museo100" !important;
+    font-size: 48px !important;
+    margin: 0 0 .5em 0 !important;
+    line-height: 43px !important;
+    clear: both !important;
+    color: #F30 !important;
+    height: 70px !important;
+}
 
 h2 {
     color: #29323B;

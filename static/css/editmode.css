@@ -39,10 +39,6 @@ p {
     color: #C5C7C9 !important;
 }
 
-body.content #content {
-    top: 30px;
-}
-
 h1.margintop {
     margin: 0;
 }

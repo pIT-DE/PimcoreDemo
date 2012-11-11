@@ -109,7 +109,7 @@ class Tool_Tag_Config {
         $writer->write();
 
         // clear cache tags
-        Pimcore_Model_Cache::clearTag("tagmanagement");
+        Pimcore_Model_Cache::clearTags(array("tagmanagement","output"));
 
         return true;
     }

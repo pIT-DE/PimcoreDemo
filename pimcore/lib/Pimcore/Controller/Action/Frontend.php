@@ -57,8 +57,7 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
         }
 
 
-        if ($this->getParam("pimcore_editmode") || $this->getParam("pimcore_version") || $this->getParam("pimcore_preview") || $this->getParam("pimcore_admin") || $this->getParam("pimcore_object_preview") ) {
-            $specialAdminRequest = true;
+        if (Pimcore_Tool::isFrontentRequestByAdmin()) {
             $this->disableBrowserCache();
 
             // start admin session & get logged in user
@@ -67,7 +66,7 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
 
 
         if (!$this->document->isPublished()) {
-            if ($specialAdminRequest) {
+            if (Pimcore_Tool::isFrontentRequestByAdmin()) {
                 if (!$user) {
                     throw new Exception("access denied for " . $this->document->getFullPath());
                 }
@@ -338,10 +337,19 @@ abstract class Pimcore_Controller_Action_Frontend extends Pimcore_Controller_Act
                 Logger::emergency($error->exception);
 
                 try {
-                    $document = Zend_Registry::get("pimcore_error_document");
-                    $this->setDocument($document);
-                    $this->setParam("document", $document);
-                    $this->disableLayout();
+                    // check if we have the error page already in the cache
+                    // the cache is written in Pimcore_Controller_Plugin_HttpErrorLog::dispatchLoopShutdown()
+                    $cacheKey = "error_page_response_" . Pimcore_Tool_Frontend::getSiteKey();
+                    if($responseBody = Pimcore_Model_Cache::load($cacheKey)) {
+                        $this->getResponse()->setBody($responseBody);
+                        $this->getResponse()->sendResponse();
+                        exit;
+                    } else {
+                        $document = Zend_Registry::get("pimcore_error_document");
+                        $this->setDocument($document);
+                        $this->setParam("document", $document);
+                        $this->disableLayout();
+                    }
                 }
                 catch (Exception $e) {
                     die("Unable to load error document");

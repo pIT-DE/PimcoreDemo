@@ -407,7 +407,7 @@ CREATE TABLE `edit_lock` (
   KEY `cid` (`cid`),
   KEY `ctype` (`ctype`),
   KEY `cidtype` (`cid`,`ctype`)
-) ENGINE=InnoDB AUTO_INCREMENT=358 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=362 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -416,7 +416,7 @@ CREATE TABLE `edit_lock` (
 
 LOCK TABLES `edit_lock` WRITE;
 /*!40000 ALTER TABLE `edit_lock` DISABLE KEYS */;
-INSERT INTO `edit_lock` VALUES (7,12,'document',1,'m78nklg7l6h1gkiu1vskja6gq3',1332192127),(10,4,'document',1,'m78nklg7l6h1gkiu1vskja6gq3',1332192127),(11,3,'document',1,'h6tnsaj1scdorv8b0bfn5mc5m4',1332265138),(12,194,'document',1,'qhg9hlkn499ploqv61elrnssi3',1332328385),(155,212,'document',1,'00i26c1brsq2nb34588tnue472',1333050090),(168,0,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333488950),(189,167,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(190,235,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(191,248,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(192,251,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(193,226,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(194,253,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(195,219,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(196,217,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(199,225,'document',1,'vrkd0kljrd3nbd82rip5u6pd83',1333495733),(201,227,'document',1,'vrkd0kljrd3nbd82rip5u6pd83',1333495833),(202,214,'document',1,'vrkd0kljrd3nbd82rip5u6pd83',1333495869),(209,210,'document',1,'59k3up7g07a2d9364u0hsteji6',1333528172),(210,223,'document',1,'59k3up7g07a2d9364u0hsteji6',1333528176),(211,224,'document',1,'59k3up7g07a2d9364u0hsteji6',1333528188),(258,1,'object',1,'v9t0bpt43r9un57erecs429s95',1333809309),(271,219,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248860),(272,220,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248869),(273,208,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248878),(274,221,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248902),(276,222,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248952),(278,218,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335249125),(279,228,'document',1,'54j33tr24ue9uan387pmjvhrq4',1336468495),(281,209,'document',1,'clv4ffbq2248ufor8up8p40bm2',1340292439),(283,157,'asset',1,'clv4ffbq2248ufor8up8p40bm2',1340293388),(284,263,'asset',1,'clv4ffbq2248ufor8up8p40bm2',1340293391),(285,152,'asset',1,'clv4ffbq2248ufor8up8p40bm2',1340293398),(290,4,'object',1,'8jassq7r5d9kqm4aug93mgo1m5',1341417418),(291,5,'object',1,'8jassq7r5d9kqm4aug93mgo1m5',1341417419),(293,7,'object',1,'8jassq7r5d9kqm4aug93mgo1m5',1341417420),(295,6,'object',1,'8jassq7r5d9kqm4aug93mgo1m5',1341417529),(297,3,'object',1,'8jassq7r5d9kqm4aug93mgo1m5',1341417573),(299,217,'document',1,'8jassq7r5d9kqm4aug93mgo1m5',1341418312),(327,216,'document',1,'7h3jon6jdru5vmviobmovbof83',1347484062),(328,229,'document',1,'7h3jon6jdru5vmviobmovbof83',1347484062),(342,230,'document',1,'nsn34g7ul1t2lv2qlaupak7vp5',1349390536),(349,207,'document',1,'nsn34g7ul1t2lv2qlaupak7vp5',1349390720),(351,226,'document',1,'nsn34g7ul1t2lv2qlaupak7vp5',1349391024),(354,231,'document',1,'nsn34g7ul1t2lv2qlaupak7vp5',1349391308),(355,195,'document',1,'ld7rvflnktg61qmgr1gtu2l3u0',1349391969),(356,1,'document',1,'ld7rvflnktg61qmgr1gtu2l3u0',1349392003),(357,206,'document',1,'ld7rvflnktg61qmgr1gtu2l3u0',1349392174);
+INSERT INTO `edit_lock` VALUES (7,12,'document',1,'m78nklg7l6h1gkiu1vskja6gq3',1332192127),(10,4,'document',1,'m78nklg7l6h1gkiu1vskja6gq3',1332192127),(11,3,'document',1,'h6tnsaj1scdorv8b0bfn5mc5m4',1332265138),(12,194,'document',1,'qhg9hlkn499ploqv61elrnssi3',1332328385),(155,212,'document',1,'00i26c1brsq2nb34588tnue472',1333050090),(168,0,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333488950),(189,167,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(190,235,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(191,248,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(192,251,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(193,226,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(194,253,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(195,219,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(196,217,'asset',1,'tl5ahn6s3sdfokbic3tu03dt34',1333489848),(199,225,'document',1,'vrkd0kljrd3nbd82rip5u6pd83',1333495733),(201,227,'document',1,'vrkd0kljrd3nbd82rip5u6pd83',1333495833),(202,214,'document',1,'vrkd0kljrd3nbd82rip5u6pd83',1333495869),(209,210,'document',1,'59k3up7g07a2d9364u0hsteji6',1333528172),(210,223,'document',1,'59k3up7g07a2d9364u0hsteji6',1333528176),(211,224,'document',1,'59k3up7g07a2d9364u0hsteji6',1333528188),(258,1,'object',1,'v9t0bpt43r9un57erecs429s95',1333809309),(271,219,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248860),(272,220,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248869),(273,208,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248878),(274,221,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248902),(276,222,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335248952),(278,218,'document',1,'if8ivm5ltba55u6lfg1jk7s7v1',1335249125),(279,228,'document',1,'54j33tr24ue9uan387pmjvhrq4',1336468495),(281,209,'document',1,'clv4ffbq2248ufor8up8p40bm2',1340292439),(283,157,'asset',1,'clv4ffbq2248ufor8up8p40bm2',1340293388),(284,263,'asset',1,'clv4ffbq2248ufor8up8p40bm2',1340293391),(285,152,'asset',1,'clv4ffbq2248ufor8up8p40bm2',1340293398),(290,4,'object',1,'8jassq7r5d9kqm4aug93mgo1m5',1341417418),(291,5,'object',1,'8jassq7r5d9kqm4aug93mgo1m5',1341417419),(293,7,'object',1,'8jassq7r5d9kqm4aug93mgo1m5',1341417420),(295,6,'object',1,'8jassq7r5d9kqm4aug93mgo1m5',1341417529),(297,3,'object',1,'8jassq7r5d9kqm4aug93mgo1m5',1341417573),(299,217,'document',1,'8jassq7r5d9kqm4aug93mgo1m5',1341418312),(327,216,'document',1,'7h3jon6jdru5vmviobmovbof83',1347484062),(328,229,'document',1,'7h3jon6jdru5vmviobmovbof83',1347484062);
 /*!40000 ALTER TABLE `edit_lock` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -503,7 +503,7 @@ CREATE TABLE `http_error_log` (
   KEY `path` (`path`(255)),
   KEY `code` (`code`),
   KEY `date` (`date`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -514,6 +514,29 @@ LOCK TABLES `http_error_log` WRITE;
 /*!40000 ALTER TABLE `http_error_log` DISABLE KEYS */;
 
 /*!40000 ALTER TABLE `http_error_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `locks`
+--
+
+DROP TABLE IF EXISTS `locks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `locks` (
+  `id` varchar(150) NOT NULL DEFAULT '',
+  `date` int(11) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `locks`
+--
+
+LOCK TABLES `locks` WRITE;
+/*!40000 ALTER TABLE `locks` DISABLE KEYS */;
+/*!40000 ALTER TABLE `locks` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1515,7 +1538,7 @@ CREATE TABLE `versions` (
 
 LOCK TABLES `versions` WRITE;
 /*!40000 ALTER TABLE `versions` DISABLE KEYS */;
-INSERT INTO `versions` VALUES (18,218,'document',1,NULL,1333494057,0,1),(20,216,'document',1,NULL,1333494083,0,1),(27,222,'document',1,NULL,1333494507,0,1),(29,209,'document',1,NULL,1333495623,0,1),(32,210,'document',1,NULL,1333495665,0,1),(33,223,'document',1,NULL,1333495665,0,1),(35,224,'document',1,NULL,1333495716,0,1),(37,225,'document',1,NULL,1333495744,0,1),(40,196,'document',1,NULL,1333495786,0,1),(41,199,'document',1,NULL,1333495786,0,1),(42,200,'document',1,NULL,1333495786,0,1),(43,201,'document',1,NULL,1333495786,0,1),(44,202,'document',1,NULL,1333495786,0,1),(45,212,'document',1,NULL,1333495786,0,1),(47,226,'document',1,NULL,1333495802,0,1),(49,227,'document',1,NULL,1333495849,0,1),(52,207,'document',1,NULL,1333567794,0,1),(54,206,'document',1,NULL,1333569297,0,1),(55,195,'document',1,NULL,1333569330,0,1),(57,220,'document',1,NULL,1333809282,0,1),(58,221,'document',1,NULL,1333809322,0,1),(59,219,'document',1,NULL,1334490272,0,1),(60,208,'document',1,NULL,1334490273,0,1),(64,228,'document',1,NULL,1334495224,0,1),(82,217,'document',1,NULL,1341418409,0,1),(85,229,'document',1,NULL,1347480187,0,1),(86,230,'document',1,NULL,1349390004,0,1),(87,230,'document',1,NULL,1349390019,0,1),(88,230,'document',1,NULL,1349390020,0,1),(89,230,'document',1,NULL,1349390065,0,1),(90,230,'document',1,NULL,1349390104,0,1),(91,207,'document',1,NULL,1349390244,0,1),(92,230,'document',1,NULL,1349391161,0,1),(93,231,'document',1,NULL,1349391198,0,1),(94,231,'document',1,NULL,1349391207,0,1),(95,231,'document',1,NULL,1349391208,0,1),(96,206,'document',1,NULL,1349392191,0,1),(97,206,'document',1,NULL,1349392198,0,1),(98,206,'document',1,NULL,1349392218,0,1),(99,206,'document',1,NULL,1349392227,0,1);
+INSERT INTO `versions` VALUES (18,218,'document',1,NULL,1333494057,0,1),(20,216,'document',1,NULL,1333494083,0,1),(27,222,'document',1,NULL,1333494507,0,1),(29,209,'document',1,NULL,1333495623,0,1),(32,210,'document',1,NULL,1333495665,0,1),(33,223,'document',1,NULL,1333495665,0,1),(35,224,'document',1,NULL,1333495716,0,1),(37,225,'document',1,NULL,1333495744,0,1),(40,196,'document',1,NULL,1333495786,0,1),(41,199,'document',1,NULL,1333495786,0,1),(42,200,'document',1,NULL,1333495786,0,1),(43,201,'document',1,NULL,1333495786,0,1),(44,202,'document',1,NULL,1333495786,0,1),(45,212,'document',1,NULL,1333495786,0,1),(47,226,'document',1,NULL,1333495802,0,1),(49,227,'document',1,NULL,1333495849,0,1),(55,195,'document',1,NULL,1333569330,0,1),(57,220,'document',1,NULL,1333809282,0,1),(58,221,'document',1,NULL,1333809322,0,1),(59,219,'document',1,NULL,1334490272,0,1),(60,208,'document',1,NULL,1334490273,0,1),(64,228,'document',1,NULL,1334495224,0,1),(82,217,'document',1,NULL,1341418409,0,1),(85,229,'document',1,NULL,1347480187,0,1),(91,207,'document',1,NULL,1349390244,0,1),(92,230,'document',1,NULL,1349391161,0,1),(95,231,'document',1,NULL,1349391208,0,1),(99,206,'document',1,NULL,1349392227,0,1);
 /*!40000 ALTER TABLE `versions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1604,4 +1627,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-10-05  1:10:40
+-- Dump completed on 2012-11-11 16:35:17
